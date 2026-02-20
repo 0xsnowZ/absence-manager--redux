@@ -143,7 +143,7 @@ function StatisticsPage() {
         <div className="card-body">
           <div className="table-responsive">
             <table className="table table-bordered">
-              <thead className="table-dark">
+              <thead className="table-secondary">
                 <tr>
                   <th>Stagiaire</th>
                   <th>Filière</th>
