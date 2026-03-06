@@ -46,12 +46,12 @@ function StagiaireList({ onEdit }) {
     <div className="card border-0 shadow-sm overflow-hidden">
       <div className="card-header bg-white py-3 border-bottom-0 d-flex justify-content-between align-items-center">
         <h5 className="mb-0 fw-bold text-dark d-flex align-items-center">
-          <span className="bg-primary text-white p-2 rounded me-3 d-flex shadow-sm">
+          <span className="bg-dark-navy text-white p-2 rounded me-3 d-flex shadow-sm">
             <i className="bi bi-people-fill"></i>
           </span>
           Effectif des Stagiaires
         </h5>
-        <span className="badge rounded-pill bg-soft-primary text-primary px-3 py-2 border shadow-none">
+        <span className="badge rounded-pill bg-soft-dark-navy text-dark-navy px-3 py-2 border shadow-none">
           {filteredStagiaires.length} Inscrits
         </span>
       </div>
@@ -98,7 +98,7 @@ function StagiaireList({ onEdit }) {
                     <td className="ps-4 text-muted small">#{stagiaire.id}</td>
                     <td>
                       <div className="d-flex align-items-center">
-                        <div className={`avatar-circle me-3 shadow-sm ${stagiaire.sexe === "f" ? "bg-soft-danger text-danger" : "bg-soft-primary text-primary"}`}>
+                        <div className={`avatar-circle me-3 shadow-sm ${stagiaire.sexe === "f" ? "bg-soft-danger text-danger" : "bg-soft-dark-navy text-dark-navy"}`}>
                           {stagiaire.nom.charAt(0).toUpperCase()}
                         </div>
                         <span className="fw-bold text-dark">{stagiaire.nom}</span>
@@ -111,7 +111,7 @@ function StagiaireList({ onEdit }) {
                     </td>
                     <td className="text-center">
                       {stagiaire.sexe === "m" ? (
-                        <span className="text-primary" title="Masculin">
+                        <span className="text-dark-navy" title="Masculin">
                           <i className="bi bi-gender-male fs-5"></i>
                         </span>
                       ) : (
@@ -170,7 +170,7 @@ function StagiaireList({ onEdit }) {
                 {[...Array(totalPages)].map((_, i) => (
                   <li key={i + 1} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
                     <button
-                      className={`page-link border-0 ${currentPage === i + 1 ? 'bg-primary text-white pointer-events-none' : 'text-dark'}`}
+                      className={`page-link border-0 ${currentPage === i + 1 ? 'bg-dark-navy text-white pointer-events-none' : 'text-dark'}`}
                       onClick={() => setCurrentPage(i + 1)}
                     >
                       {i + 1}

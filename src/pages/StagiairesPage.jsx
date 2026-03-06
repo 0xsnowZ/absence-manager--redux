@@ -39,13 +39,13 @@ function StagiairesPage() {
       <div className="d-flex justify-content-between align-items-center mb-5">
         <div>
           <h2 className="fw-bold mb-1">
-            <i className="bi bi-people-fill me-3 text-primary"></i>
+            <i className="bi bi-people-fill me-3 text-dark-navy"></i>
             Gestion des Stagiaires
           </h2>
           <p className="text-muted mb-0">Consultez, ajoutez ou modifiez les profils des stagiaires.</p>
         </div>
         {!showForm && (
-          <button className="btn btn-primary rounded-pill px-4 py-2 shadow-sm fw-bold d-flex align-items-center" onClick={handleAddNew}>
+          <button className="btn btn-dark-navy rounded-pill px-4 py-2 shadow-sm fw-bold d-flex align-items-center" onClick={handleAddNew}>
             <i className="bi bi-plus-lg me-2 fs-5"></i>
             Nouveau Stagiaire
           </button>

@@ -57,7 +57,7 @@ function StagiaireForm({ stagiaire, onCancel, onSave }) {
 
   return (
     <div className="card border-0 shadow-lg overflow-hidden">
-      <div className="card-header bg-dark text-white py-3">
+      <div className="card-header bg-dark-navy text-white py-3">
         <h5 className="mb-0 fw-bold small text-uppercase tracking-wider">
           <i className="bi bi-person-plus-fill me-2"></i>
           {stagiaire ? "Modifier le Profil" : "Nouveau Stagiaire"}
@@ -69,7 +69,7 @@ function StagiaireForm({ stagiaire, onCancel, onSave }) {
             <label className="form-label fw-bold small text-muted text-uppercase">Nom Complet</label>
             <div className="input-group">
               <span className="input-group-text bg-light border-end-0">
-                <i className="bi bi-person text-primary"></i>
+                <i className="bi bi-person text-dark-navy"></i>
               </span>
               <input
                 type="text"
@@ -87,7 +87,7 @@ function StagiaireForm({ stagiaire, onCancel, onSave }) {
             <label className="form-label fw-bold small text-muted text-uppercase">Filière / Classe</label>
             <div className="input-group">
               <span className="input-group-text bg-light border-end-0">
-                <i className="bi bi-mortarboard text-primary"></i>
+                <i className="bi bi-mortarboard text-dark-navy"></i>
               </span>
               <input
                 type="text"
@@ -117,7 +117,7 @@ function StagiaireForm({ stagiaire, onCancel, onSave }) {
                   onChange={handleChange}
                 />
                 <label className="form-check-label fw-medium" htmlFor="sexeM">
-                  <i className="bi bi-gender-male me-1 text-primary"></i>Masculin
+                  <i className="bi bi-gender-male me-1 text-dark-navy"></i>Masculin
                 </label>
               </div>
               <div className="form-check custom-radio">
@@ -138,7 +138,7 @@ function StagiaireForm({ stagiaire, onCancel, onSave }) {
           </div>
 
           <div className="d-flex gap-3 pt-3">
-            <button type="submit" className="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm d-flex align-items-center flex-grow-1 justify-content-center">
+            <button type="submit" className="btn btn-dark-navy rounded-pill px-4 py-2 fw-bold shadow-sm d-flex align-items-center flex-grow-1 justify-content-center">
               <i className="bi bi-check-lg me-2 fs-5"></i>
               {stagiaire ? "Mettre à jour" : "Enregistrer"}
             </button>
@@ -154,7 +154,7 @@ function StagiaireForm({ stagiaire, onCancel, onSave }) {
       </div>
       <style>{`
         .tracking-wider { letter-spacing: 0.05em; }
-        .custom-radio .form-check-input:checked { background-color: #0d6efd; border-color: #0d6efd; }
+        .custom-radio .form-check-input:checked { background-color: #0A121A; border-color: #0A121A; }
       `}</style>
     </div>
   );

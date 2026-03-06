@@ -90,10 +90,10 @@ function AbsenceForm({ absence, onCancel, onSave }) {
   return (
     <div className="card border-0 shadow-lg overflow-hidden position-relative" style={{ zIndex: 10 }}>
       {/* Decorative top border */}
-      <div className="bg-primary" style={{ height: '4px' }}></div>
+      <div className="bg-dark-navy" style={{ height: '4px' }}></div>
       <div className="card-header bg-white py-4 border-bottom-0">
         <h5 className="mb-0 fw-bold text-dark d-flex align-items-center">
-          <span className="bg-soft-primary text-primary p-2 rounded me-3 d-flex">
+          <span className="bg-soft-dark-navy text-dark-navy p-2 rounded me-3 d-flex">
             <i className="bi bi-calendar-plus"></i>
           </span>
           {absence ? "Modifier l'Absence" : "Saisir une Absence"}
@@ -107,7 +107,7 @@ function AbsenceForm({ absence, onCancel, onSave }) {
           <div className="mb-4">
             <label className="form-label fw-bold small text-muted text-uppercase">Cible Stagiaire</label>
             <div className="input-group input-group-lg shadow-sm">
-              <span className="input-group-text bg-white text-primary border-end-0">
+              <span className="input-group-text bg-white text-dark-navy border-end-0">
                 <i className="bi bi-person-badge"></i>
               </span>
               <select
@@ -133,7 +133,7 @@ function AbsenceForm({ absence, onCancel, onSave }) {
             <div className="col-md-7">
               <label className="form-label fw-bold small text-muted text-uppercase">Date Relevée</label>
               <div className="input-group input-group-lg shadow-sm">
-                <span className="input-group-text bg-white text-primary border-end-0">
+                <span className="input-group-text bg-white text-dark-navy border-end-0">
                   <i className="bi bi-calendar-event"></i>
                 </span>
                 <input
@@ -152,7 +152,7 @@ function AbsenceForm({ absence, onCancel, onSave }) {
             <div className="col-md-5">
               <label className="form-label fw-bold small text-muted text-uppercase">Heures Manquées</label>
               <div className="input-group input-group-lg shadow-sm">
-                <span className="input-group-text bg-white text-primary border-end-0">
+                <span className="input-group-text bg-white text-dark-navy border-end-0">
                   <i className="bi bi-clock-history"></i>
                 </span>
                 <input
@@ -199,7 +199,7 @@ function AbsenceForm({ absence, onCancel, onSave }) {
           </div>
 
           <div className="d-flex gap-3 pt-3 border-top mt-2">
-            <button type="submit" className="btn btn-primary rounded-pill px-5 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center flex-grow-1 fs-5">
+            <button type="submit" className="btn btn-dark-navy rounded-pill px-5 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center flex-grow-1 fs-5">
               <i className="bi bi-check2-all me-2"></i>
               {absence ? "Enregistrer les modifications" : "Valider l'Absence"}
             </button>

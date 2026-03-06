@@ -56,12 +56,17 @@ const generateAbsences = (stagiaires) => {
       for (let j = 0; j < numAbsences; j++) {
         const month = 10 + (j % 3);
         const day = 10 + (s.id % 15);
+        const heures = (j % 2 === 0) ? 2 : 4;
+        // Generate mock slots [1] for 2h, [1, 2] for 4h
+        const slots = heures === 2 ? [1] : [1, 2];
+
         absences.push({
           id: id++,
           idstag: s.id,
           date: `2025-${month}-${day}`,
           justifie: j % 2 === 0,
-          heures: (j % 2 === 0) ? 2 : 4
+          heures,
+          slots
         });
       }
     }

@@ -13,8 +13,8 @@ function StatisticsPage() {
       <div className="d-flex justify-content-between align-items-center mb-5">
         <div>
           <h2 className="fw-bold mb-1">
-            <i className="bi bi-graph-up-arrow me-3 text-primary"></i>
-            Statistiques & Rapports
+            <i className="bi bi-graph-up-arrow me-3 text-dark-navy"></i>
+            Statistiques
           </h2>
           <p className="text-muted mb-0">Vue globale de l'activité commerciale et de l'assiduité.</p>
         </div>

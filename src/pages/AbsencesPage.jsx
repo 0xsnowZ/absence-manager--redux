@@ -16,8 +16,7 @@ function AbsencesPage() {
   const [editingAbsence, setEditingAbsence] = useState(null);
   const [filters, setFilters] = useState({
     filterType: "all",
-    dateFilter: null,
-    periodFilter: null,
+    dateRange: null,
     stagiaireFilter: null,
     filiereFilter: null,
   });
@@ -51,13 +50,13 @@ function AbsencesPage() {
       <div className="d-flex justify-content-between align-items-center mb-5">
         <div>
           <h2 className="fw-bold mb-1">
-            <i className="bi bi-calendar-x-fill me-3 text-primary"></i>
+            <i className="bi bi-calendar-x-fill me-3 text-dark-navy"></i>
             Gestion des Absences
           </h2>
           <p className="text-muted mb-0">Suivi et gestion des absences individuelles.</p>
         </div>
         {!showForm && (
-          <button className="btn btn-primary rounded-pill px-4 py-2 shadow fw-bold d-flex align-items-center" onClick={handleAddNew}>
+          <button className="btn btn-dark-navy rounded-pill px-4 py-2 shadow fw-bold d-flex align-items-center" onClick={handleAddNew}>
             <i className="bi bi-plus-circle-fill me-2 fs-5"></i>
             Déclarer une Absence
           </button>
@@ -83,8 +82,7 @@ function AbsencesPage() {
             <AbsenceList
               onEdit={handleEdit}
               filterType={filters.filterType}
-              dateFilter={filters.dateFilter}
-              periodFilter={filters.periodFilter}
+              dateRange={filters.dateRange}
               stagiaireFilter={filters.stagiaireFilter}
               filiereFilter={filters.filiereFilter}
             />

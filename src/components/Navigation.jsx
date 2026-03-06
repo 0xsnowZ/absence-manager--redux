@@ -22,13 +22,13 @@ function Navigation() {
   ];
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-3 mb-4">
+    <nav className="navbar navbar-expand-lg navbar-dark shadow-sm py-3 mb-4" style={{ backgroundColor: '#0A121A' }}>
       <div className="container">
         <NavLink className="navbar-brand fw-bold d-flex align-items-center" to="/">
-          <div className="bg-white text-primary p-2 rounded-circle me-3 d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}>
+          <div className="bg-white text-dark p-2 rounded-circle me-3 d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}>
             <i className="bi bi-calendar-check-fill"></i>
           </div>
-          <span className="tracking-tight">ABSENCE MANAGER</span>
+          <span className="tracking-tight text-white">ABSENCE MANAGER</span>
         </NavLink>
         <button
           className="navbar-toggler border-0"
@@ -46,7 +46,7 @@ function Navigation() {
                   to={tab.path}
                   className={({ isActive }) =>
                     `nav-link px-3 py-2 rounded-pill d-flex align-items-center transition-all ${isActive
-                      ? "active bg-white text-primary fw-bold shadow-sm"
+                      ? "active bg-white text-dark fw-bold shadow-sm"
                       : "text-white opacity-75 hover-opacity-100"
                     }`
                   }
@@ -61,7 +61,7 @@ function Navigation() {
             {user && (
               <li className="nav-item ms-lg-3 mt-3 mt-lg-0 border-start-lg border-white-50 ps-lg-3 d-flex align-items-center">
                 <div className="d-flex align-items-center text-white me-3">
-                  <div className="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold shadow-sm" style={{ width: '32px', height: '32px', fontSize: '14px' }}>
+                  <div className="bg-white text-dark rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold shadow-sm" style={{ width: '32px', height: '32px', fontSize: '14px' }}>
                     {user.name.charAt(0)}
                   </div>
                   <div className="lh-sm d-none d-xl-block">
@@ -71,7 +71,7 @@ function Navigation() {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="btn btn-sm btn-light text-primary rounded-pill fw-bold px-3 shadow-sm hover-lift"
+                  className="btn btn-sm btn-light text-dark fw-bold px-3 shadow-sm hover-lift"
                   title="Déconnexion"
                 >
                   <i className="bi bi-box-arrow-right me-1"></i> <span className="d-lg-none d-xl-inline">Quitter</span>

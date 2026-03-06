@@ -8,6 +8,7 @@ import { addAbsence } from "../store/absenceSlice.jsx";
 function SaisiePage() {
     const dispatch = useDispatch();
     const stagiaires = useSelector((state) => state.stagiaires.items);
+    const allAbsences = useSelector((state) => state.absences.items);
 
     // Date range: [startDate, endDate]
     const [dateRange, setDateRange] = useState([new Date(), new Date()]);
@@ -17,6 +18,29 @@ function SaisiePage() {
     // saisieData: { [`${stagId}|${dateStr}|${slotId}`]: boolean }
     const [saisieData, setSaisieData] = useState({});
     const [successMessage, setSuccessMessage] = useState("");
+
+    // Create a persistent map of ALREADY submitted absences from Redux
+    const reduxAbsencesMap = useMemo(() => {
+        const map = {};
+        allAbsences.forEach(a => {
+            const dateStr = a.date;
+            const stagId = a.idstag;
+
+            // If we have explicit slots, use them
+            if (a.slots && Array.isArray(a.slots)) {
+                a.slots.forEach(slotId => {
+                    map[`${stagId}|${dateStr}|${slotId}`] = true;
+                });
+            } else {
+                // Fallback for legacy data/direct entry: fill slots sequentially based on hours
+                const numSlots = Math.ceil((a.heures || 2) / 2);
+                for (let i = 1; i <= numSlots; i++) {
+                    map[`${stagId}|${dateStr}|${i}`] = true;
+                }
+            }
+        });
+        return map;
+    }, [allAbsences]);
 
     const slots = [
         { id: 1, label: "08:30-10:30", short: "S1" },
@@ -62,6 +86,9 @@ function SaisiePage() {
     // Handle individual cell toggle
     const handleSaisieChange = (stagId, dateStr, slotId) => {
         const key = `${stagId}|${dateStr}|${slotId}`;
+        // Prevent editing already submitted data through this interface
+        if (reduxAbsencesMap[key]) return;
+
         setSaisieData((prev) => ({
             ...prev,
             [key]: !prev[key]
@@ -93,36 +120,38 @@ function SaisiePage() {
 
         let addedCount = 0;
 
-        // Group entries by student and date to aggregate hours (2h per slot)
-        const aggregated = {};
+        // Group entries by student and date
+        const grouped = {};
 
         Object.entries(saisieData).forEach(([key, isAbsent]) => {
             if (isAbsent) {
-                const [stagId, dateStr] = key.split('|');
+                const [stagId, dateStr, slotId] = key.split('|');
                 const groupKey = `${stagId}|${dateStr}`;
-                aggregated[groupKey] = (aggregated[groupKey] || 0) + 2;
+                if (!grouped[groupKey]) grouped[groupKey] = [];
+                grouped[groupKey].push(parseInt(slotId));
             }
         });
 
-        Object.entries(aggregated).forEach(([groupKey, hours]) => {
+        Object.entries(grouped).forEach(([groupKey, slotsArray]) => {
             const [stagId, dateStr] = groupKey.split('|');
             dispatch(
                 addAbsence({
                     idstag: parseInt(stagId),
                     date: dateStr,
                     justifie: false,
-                    heures: hours,
+                    heures: slotsArray.length * 2,
+                    slots: slotsArray
                 })
             );
             addedCount++;
         });
 
         if (addedCount > 0) {
-            setSuccessMessage(`${addedCount} séance(s) d'absence(s) enregistrée(s) avec succès.`);
-            setSaisieData({}); // Reset
+            setSuccessMessage(`${addedCount} absence(s) enregistrée(s) avec succès.`);
+            setSaisieData({});
             setTimeout(() => setSuccessMessage(""), 5000);
         } else {
-            setSuccessMessage("Aucune absence sélectionnée.");
+            setSuccessMessage("Aucune nouvelle absence à enregistrer.");
             setTimeout(() => setSuccessMessage(""), 3000);
         }
     };
@@ -131,7 +160,7 @@ function SaisiePage() {
         <div className="container py-4">
             <div className="mb-4">
                 <h2 className="fw-bold">
-                    <i className="bi bi-person-badge me-2 text-primary"></i>
+                    <i className="bi bi-person-badge me-2 text-dark-navy"></i>
                     Registre de Présence
                 </h2>
                 <p className="text-muted">
@@ -151,7 +180,7 @@ function SaisiePage() {
                             <label className="form-label fw-bold small text-muted text-uppercase">Classe / Filière</label>
                             <div className="input-group input-group-lg">
                                 <span className="input-group-text bg-white border-end-0">
-                                    <i className="bi bi-mortarboard-fill text-primary"></i>
+                                    <i className="bi bi-mortarboard-fill text-dark-navy"></i>
                                 </span>
                                 <select
                                     className="form-select border-start-0"
@@ -178,7 +207,7 @@ function SaisiePage() {
                                     type="button"
                                 >
                                     <span className="text-dark">
-                                        <i className="bi bi-calendar-check-fill me-2 text-primary"></i>
+                                        <i className="bi bi-calendar-check-fill me-2 text-dark-navy"></i>
                                         {dateRange?.[0] ? dateRange[0].toLocaleDateString('fr-FR') : 'Début'}
                                         <span className="mx-2 text-muted">➟</span>
                                         {dateRange?.[1] ? dateRange[1].toLocaleDateString('fr-FR') : 'Fin'}
@@ -228,7 +257,7 @@ function SaisiePage() {
                             <div className="card-header bg-white py-4 border-bottom-0">
                                 <div className="d-flex justify-content-between align-items-center">
                                     <h5 className="mb-0 fw-bold text-dark d-flex align-items-center">
-                                        <span className="bg-primary text-white p-2 rounded me-3">
+                                        <span className="bg-dark-navy text-white p-2 rounded me-3">
                                             <i className="bi bi-people-fill"></i>
                                         </span>
                                         {filiere}
@@ -236,7 +265,7 @@ function SaisiePage() {
                                     <div className="d-flex gap-4">
                                         {slots.map(s => (
                                             <div key={s.id} className="text-center">
-                                                <div className="fw-bold text-primary small">{s.short}</div>
+                                                <div className="fw-bold text-dark-navy small">{s.short}</div>
                                                 <div className="text-muted" style={{ fontSize: '0.65rem' }}>{s.label}</div>
                                             </div>
                                         ))}
@@ -249,7 +278,7 @@ function SaisiePage() {
                                     <thead>
                                         <tr className="bg-light">
                                             <th rowSpan="2" className="ps-4 border-bottom-0 sticky-col" style={{ width: "240px", zIndex: 10 }}>
-                                                STUDENT NAME
+                                                NOM DU STAGIAIRE
                                             </th>
                                             {dateColumns.map((d, index) => (
                                                 <th key={index} colSpan="4" className="text-center py-2 border-bottom-0" style={{ minWidth: "160px", backgroundColor: '#f8f9fa' }}>
@@ -284,11 +313,14 @@ function SaisiePage() {
                                                         <React.Fragment key={dIdx}>
                                                             {slots.map(s => {
                                                                 const key = `${stagiaire.id}|${dateStr}|${s.id}`;
-                                                                const isChecked = !!saisieData[key];
+                                                                const isNew = !!saisieData[key];
+                                                                const isSubmitted = !!reduxAbsencesMap[key];
+                                                                const isChecked = isNew || isSubmitted;
+
                                                                 return (
                                                                     <td
                                                                         key={s.id}
-                                                                        className={`text-center p-0 cell-slot ${isChecked ? 'is-absent' : ''}`}
+                                                                        className={`text-center p-0 cell-slot ${isNew ? 'is-absent' : ''} ${isSubmitted ? 'is-submitted' : ''}`}
                                                                         onClick={() => handleSaisieChange(stagiaire.id, dateStr, s.id)}
                                                                         style={{ height: '48px' }}
                                                                     >
@@ -310,7 +342,7 @@ function SaisiePage() {
                             </div>
 
                             <div className="card-footer bg-light p-4 text-center border-top-0">
-                                <button type="submit" className="btn btn-primary px-5 py-3 btn-lg shadow rounded-pill fw-bold">
+                                <button type="submit" className="btn btn-dark-navy px-5 py-3 btn-lg shadow rounded-pill fw-bold">
                                     <i className="bi bi-check2-all me-2"></i>
                                     VALIDER LE RÉGISTRE D'APPEL
                                 </button>
@@ -329,22 +361,27 @@ function SaisiePage() {
                 )
             ) : (
                 <div className="text-center py-5 bg-white border rounded shadow-sm" style={{ borderStyle: 'dashed' }}>
-                    <i className="bi bi-layout-three-columns text-primary opacity-25" style={{ fontSize: '5rem' }}></i>
+                    <i className="bi bi-layout-three-columns text-dark-navy opacity-25" style={{ fontSize: '5rem' }}></i>
                     <h4 className="mt-3 text-dark fw-bold">Registre d'Appel Prêt</h4>
                     <p className="text-muted">Sélectionnez une filière et une période pour charger la grille de saisie professionnelle.</p>
                 </div>
             )}
 
             <style>{`
-                .professional-grid { border-collapse: separate; border-spacing: 0; }
-                .border-end-heavy { border-right: 2px solid #dee2e6 !important; }
-                .sticky-col { position: sticky; left: 0; z-index: 5; }
-                .cell-slot { cursor: pointer; transition: background 0.2s; border: 1px solid #f2f2f2 !important; position: relative; }
-                .cell-slot:hover { background-color: #fceaea; }
-                .is-absent { background-color: #dc3545 !important; border-color: #c82333 !important; }
-                .dot-marker { display: inline-block; width: 4px; height: 4px; background-color: #ddd; border-radius: 50%; }
+                .professional-grid { border-collapse: collapse; width: 100%; border: 1px solid #ced4da; }
+                .professional-grid th, .professional-grid td { border: 1px solid #adb5bd !important; }
+                .border-end-heavy { border-right: 3px solid #495057 !important; }
+                .sticky-col { position: sticky; left: 0; z-index: 5; background-color: #fff !important; }
+                .cell-slot { cursor: pointer; transition: background 0.2s; position: relative; }
+                .cell-slot:hover { background-color: #f8f9fa; }
+                .is-absent { background-color: #dc3545 !important; border-color: #dc3545 !important; }
+                .is-submitted { background-color: #0A121A !important; border-color: #0A121A !important; cursor: default !important; }
+                .dot-marker { display: inline-block; width: 6px; height: 6px; background-color: #dee2e6; border-radius: 50%; opacity: 0.6; }
+                .btn-dark-navy { background-color: #0A121A; border-color: #0A121A; color: #fff; transition: all 0.2s; }
+                .btn-dark-navy:hover { background-color: #1a232f; border-color: #1a232f; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
                 .hover-row:hover .sticky-col { background-color: #f8f9fa !important; }
-                .hover-row:hover td { background-color: rgba(0,0,0,0.01); }
+                .bg-dark-navy { background-color: #0A121A; }
+                .text-dark-navy { color: #0A121A; }
                 .btn-white { background-color: #fff; border-color: #dee2e6; }
                 .tracking-wider { letter-spacing: 0.05em; }
             `}</style>

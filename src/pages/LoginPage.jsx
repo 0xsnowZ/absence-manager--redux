@@ -35,9 +35,9 @@ function LoginPage() {
                 <div className="card-body p-5">
                     <div className="text-center mb-5">
                         <div
-                            className="bg-gradient-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-lg"
+                            className="text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow"
                             style={{
-                                background: 'linear-gradient(45deg, #0d6efd, #0dcaf0)',
+                                background: 'linear-gradient(135deg, #0A121A 0%, #1a232f 100%)',
                                 width: '80px',
                                 height: '80px'
                             }}
@@ -59,7 +59,7 @@ function LoginPage() {
                         <div className="mb-4">
                             <label className="form-label fw-bold text-muted small text-uppercase" htmlFor="email">Adresse Email</label>
                             <div className="input-group input-group-lg shadow-sm">
-                                <span className="input-group-text bg-white border-end-0 text-primary">
+                                <span className="input-group-text bg-white border-end-0 text-dark-navy">
                                     <i className="bi bi-envelope-fill"></i>
                                 </span>
                                 <input
@@ -77,7 +77,7 @@ function LoginPage() {
                         <div className="mb-5">
                             <label className="form-label fw-bold text-muted small text-uppercase" htmlFor="password">Mot de passe</label>
                             <div className="input-group input-group-lg shadow-sm">
-                                <span className="input-group-text bg-white border-end-0 text-primary">
+                                <span className="input-group-text bg-white border-end-0 text-dark-navy">
                                     <i className="bi bi-key-fill"></i>
                                 </span>
                                 <input
@@ -98,7 +98,7 @@ function LoginPage() {
 
                         <button
                             type="submit"
-                            className="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow position-relative overflow-hidden"
+                            className="btn btn-dark-navy btn-lg w-100 rounded-pill fw-bold shadow-lg position-relative overflow-hidden"
                             disabled={isLoading}
                         >
                             {isLoading ? (

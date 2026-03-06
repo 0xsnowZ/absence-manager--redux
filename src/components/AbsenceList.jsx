@@ -7,8 +7,7 @@ import { deleteAbsence } from "../store/absenceSlice.jsx";
 function AbsenceList({
   onEdit,
   filterType = "all",
-  dateFilter = null,
-  periodFilter = null,
+  dateRange = null,
   stagiaireFilter = null,
   filiereFilter = null,
 }) {
@@ -33,14 +32,18 @@ function AbsenceList({
     if (filterType === "justified" && !absence.justifie) return false;
     if (filterType === "unjustified" && absence.justifie) return false;
 
-    // Filter by specific date
-    if (dateFilter && absence.date !== dateFilter) return false;
+    // Filter by date range
+    if (dateRange && dateRange.length === 2 && (dateRange[0] || dateRange[1])) {
+      const start = dateRange[0] ? new Date(dateRange[0]) : null;
+      if (start) start.setHours(0, 0, 0, 0);
 
-    // Filter by period
-    if (periodFilter) {
-      const { startDate, endDate } = periodFilter;
-      if (startDate && absence.date < startDate) return false;
-      if (endDate && absence.date > endDate) return false;
+      const end = dateRange[1] ? new Date(dateRange[1]) : null;
+      if (end) end.setHours(23, 59, 59, 999);
+
+      const absDate = new Date(absence.date);
+
+      if (start && absDate < start) return false;
+      if (end && absDate > end) return false;
     }
 
     if (stagiaireFilter && absence.idstag !== parseInt(stagiaireFilter))
@@ -59,12 +62,19 @@ function AbsenceList({
     }
 
     return true;
+  }).sort((a, b) => {
+    // Sort by date descending
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    if (dateB - dateA !== 0) return dateB - dateA;
+    // If dates are same, sort by ID descending
+    return b.id - a.id;
   });
 
   const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, filterType, dateFilter, periodFilter, stagiaireFilter, filiereFilter, absences.length]);
+  }, [searchTerm, filterType, dateRange, stagiaireFilter, filiereFilter, absences.length]);
 
   const itemsPerPage = 8;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -87,12 +97,12 @@ function AbsenceList({
     <div className="card border-0 shadow-sm overflow-hidden">
       <div className="card-header bg-white py-3 border-bottom-0 d-flex justify-content-between align-items-center">
         <h5 className="mb-0 fw-bold text-dark d-flex align-items-center">
-          <span className="bg-primary text-white p-2 rounded me-3 d-flex shadow-sm">
+          <span className="bg-dark-navy text-white p-2 rounded me-3 d-flex shadow-sm">
             <i className="bi bi-calendar2-x-fill"></i>
           </span>
           Historique des Absences
         </h5>
-        <span className="badge rounded-pill bg-soft-primary text-primary px-3 py-2 border shadow-none">
+        <span className="badge rounded-pill bg-soft-dark-navy text-dark-navy px-3 py-2 border shadow-none">
           {filteredAbsences.length} Enregistrements
         </span>
       </div>
@@ -140,7 +150,7 @@ function AbsenceList({
                     <td className="ps-4 text-muted small">#{absence.id}</td>
                     <td>
                       <div className="d-flex align-items-center">
-                        <div className="avatar-circle me-3 bg-light text-primary shadow-sm border">
+                        <div className="avatar-circle me-3 bg-light text-dark-navy shadow-sm border">
                           <i className="bi bi-person-fill"></i>
                         </div>
                         <span className="fw-bold text-dark">{getStagiaireName(absence.idstag)}</span>
@@ -153,13 +163,13 @@ function AbsenceList({
                     </td>
                     <td>
                       <span className="text-muted small fw-medium">
-                        <i className="bi bi-calendar3 me-2 text-primary opacity-50"></i>
+                        <i className="bi bi-calendar3 me-2 text-dark-navy opacity-50"></i>
                         {formatDate(absence.date)}
                       </span>
                     </td>
                     <td className="text-center">
                       <span className="badge bg-light text-dark fw-bold border rounded-pill px-3 py-1">
-                        <i className="bi bi-clock me-1 text-primary"></i>
+                        <i className="bi bi-clock me-1 text-dark-navy"></i>
                         {absence.heures || 2}h
                       </span>
                     </td>
@@ -226,7 +236,7 @@ function AbsenceList({
                       )}
                       <li className={`page-item ${currentPage === page ? 'active' : ''}`}>
                         <button
-                          className={`page-link border-0 ${currentPage === page ? 'bg-primary text-white pointer-events-none' : 'text-dark'}`}
+                          className={`page-link border-0 ${currentPage === page ? 'bg-dark-navy text-white pointer-events-none' : 'text-dark'}`}
                           onClick={() => setCurrentPage(page)}
                         >
                           {page}
