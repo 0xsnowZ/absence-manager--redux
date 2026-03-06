@@ -9,6 +9,7 @@ function StagiaireList({ onEdit }) {
   const dispatch = useDispatch();
   const stagiaires = useSelector((state) => state.stagiaires.items);
   const absences = useSelector((state) => state.absences.items);
+  const user = useSelector((state) => state.auth.user);
   const [searchTerm, setSearchTerm] = useState("");
 
   const getAbsenceCount = (stagiaireId) => {
@@ -135,13 +136,15 @@ function StagiaireList({ onEdit }) {
                         >
                           <i className="bi bi-pencil-fill"></i>
                         </button>
-                        <button
-                          className="btn-action-round btn-delete shadow-sm"
-                          onClick={() => handleDelete(stagiaire.id)}
-                          title="Supprimer"
-                        >
-                          <i className="bi bi-trash3-fill"></i>
-                        </button>
+                        {user?.role === 'admin' && (
+                          <button
+                            className="btn-action-round btn-delete shadow-sm"
+                            onClick={() => handleDelete(stagiaire.id)}
+                            title="Supprimer"
+                          >
+                            <i className="bi bi-trash3-fill"></i>
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

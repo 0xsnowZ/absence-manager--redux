@@ -15,6 +15,7 @@ function AbsenceList({
   const dispatch = useDispatch();
   const absences = useSelector((state) => state.absences.items);
   const stagiaires = useSelector((state) => state.stagiaires.items);
+  const user = useSelector((state) => state.auth.user);
   const [searchTerm, setSearchTerm] = useState("");
 
   const getStagiaireName = (id) => {
@@ -184,13 +185,15 @@ function AbsenceList({
                         >
                           <i className="bi bi-pencil-fill"></i>
                         </button>
-                        <button
-                          className="btn-action-round btn-delete shadow-sm"
-                          onClick={() => handleDelete(absence.id)}
-                          title="Supprimer"
-                        >
-                          <i className="bi bi-trash3-fill"></i>
-                        </button>
+                        {user?.role === 'admin' && (
+                          <button
+                            className="btn-action-round btn-delete shadow-sm"
+                            onClick={() => handleDelete(absence.id)}
+                            title="Supprimer"
+                          >
+                            <i className="bi bi-trash3-fill"></i>
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

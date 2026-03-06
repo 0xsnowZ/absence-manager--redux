@@ -125,7 +125,7 @@ function SaisiePage() {
             <div className="mb-4">
                 <h2 className="fw-bold">
                     <i className="bi bi-person-badge me-2 text-primary"></i>
-                    Registre de Présence Professionnel
+                    Registre de Présence 
                 </h2>
                 <p className="text-muted">
                     Saisie par séances (S1-S4) de 2 heures chacune. Cliquez sur une case pour marquer une absence.

@@ -1,23 +1,35 @@
 import React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../store/authSlice.jsx";
 
 // Navigation Component
-function Navigation({ activeTab, setActiveTab }) {
+function Navigation() {
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
   const tabs = [
-    { id: "stagiaires", label: "Stagiaires", icon: "bi-people" },
-    { id: "absences", label: "Absences", icon: "bi-calendar-x" },
-    { id: "saisie", label: "Saisie", icon: "bi-pencil-square" },
-    { id: "statistics", label: "Statistiques", icon: "bi-graph-up" },
+    { id: "stagiaires", label: "Stagiaires", icon: "bi-people", path: "/" },
+    { id: "absences", label: "Absences", icon: "bi-calendar-x", path: "/absences" },
+    { id: "saisie", label: "Saisie", icon: "bi-pencil-square", path: "/saisie" },
+    ...(user && user.role === 'admin' ? [{ id: "statistics", label: "Statistiques", icon: "bi-graph-up", path: "/statistiques" }] : []),
   ];
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-3 mb-4">
       <div className="container">
-        <a className="navbar-brand fw-bold d-flex align-items-center" href="#">
+        <NavLink className="navbar-brand fw-bold d-flex align-items-center" to="/">
           <div className="bg-white text-primary p-2 rounded-circle me-3 d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}>
             <i className="bi bi-calendar-check-fill"></i>
           </div>
           <span className="tracking-tight">ABSENCE MANAGER</span>
-        </a>
+        </NavLink>
         <button
           className="navbar-toggler border-0"
           type="button"
@@ -27,25 +39,45 @@ function Navigation({ activeTab, setActiveTab }) {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto gap-2 mt-3 mt-lg-0">
+          <ul className="navbar-nav ms-auto gap-2 mt-3 mt-lg-0 align-items-lg-center">
             {tabs.map((tab) => (
               <li className="nav-item" key={tab.id}>
-                <a
-                  className={`nav-link px-4 py-2 rounded-pill d-flex align-items-center transition-all ${activeTab === tab.id
+                <NavLink
+                  to={tab.path}
+                  className={({ isActive }) =>
+                    `nav-link px-3 py-2 rounded-pill d-flex align-items-center transition-all ${isActive
                       ? "active bg-white text-primary fw-bold shadow-sm"
                       : "text-white opacity-75 hover-opacity-100"
-                    }`}
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setActiveTab(tab.id);
-                  }}
+                    }`
+                  }
                 >
                   <i className={`bi ${tab.icon} me-2`}></i>
                   {tab.label}
-                </a>
+                </NavLink>
               </li>
             ))}
+
+            {/* User Profile & Logout */}
+            {user && (
+              <li className="nav-item ms-lg-3 mt-3 mt-lg-0 border-start-lg border-white-50 ps-lg-3 d-flex align-items-center">
+                <div className="d-flex align-items-center text-white me-3">
+                  <div className="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold shadow-sm" style={{ width: '32px', height: '32px', fontSize: '14px' }}>
+                    {user.name.charAt(0)}
+                  </div>
+                  <div className="lh-sm d-none d-xl-block">
+                    <div className="fw-bold fs-6">{user.name}</div>
+                    <div className="small opacity-75 text-uppercase" style={{ fontSize: '0.7rem' }}>{user.role}</div>
+                  </div>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="btn btn-sm btn-light text-primary rounded-pill fw-bold px-3 shadow-sm hover-lift"
+                  title="Déconnexion"
+                >
+                  <i className="bi bi-box-arrow-right me-1"></i> <span className="d-lg-none d-xl-inline">Quitter</span>
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>
@@ -55,6 +87,12 @@ function Navigation({ activeTab, setActiveTab }) {
         .nav-link:not(.active):hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); opacity: 1 !important; }
         .transition-all { transition: all 0.2s ease-in-out; }
         .hover-opacity-100:hover { opacity: 1 !important; }
+        .border-white-50 { border-color: rgba(255,255,255,0.2) !important; }
+        @media (min-width: 992px) {
+          .border-start-lg { border-left: 1px solid; }
+        }
+        .hover-lift { transition: transform 0.2s; }
+        .hover-lift:hover { transform: translateY(-2px); }
       `}</style>
     </nav>
   );
