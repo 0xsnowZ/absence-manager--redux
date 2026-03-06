@@ -69,7 +69,7 @@ The app will launch at `http://localhost:5173/`. You will be automatically redir
 
 ## 🌐 Deploy to GitHub Pages
 
-This project is configured to deploy automatically to GitHub Pages using GitHub Actions.
+This project is configured to deploy automatically to the `gh-pages` branch using GitHub Actions.
 
 ### 1) Push to GitHub
 
@@ -80,11 +80,12 @@ Push your code to the `main` branch of your repository.
 In your GitHub repository:
 
 - Go to **Settings → Pages**
-- Under **Build and deployment**, set **Source** to **GitHub Actions**
+- Under **Build and deployment**, set **Source** to **Deploy from a branch**
+- Choose **Branch**: `gh-pages` and **Folder**: `/ (root)`
 
 ### 3) Trigger deployment
 
-Every push to `main` runs the workflow in `.github/workflows/deploy.yml` and publishes the `dist` folder.
+Every push to `main` runs the workflow in `.github/workflows/deploy.yml`, builds the app, and updates the `gh-pages` branch.
 
 Your app URL will be:
 
