@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Initial state, checking local storage for a persisted session
+// Initial state — only admin is hardcoded; profs are managed in profSlice
 const storedUser = localStorage.getItem("user");
 
 const initialState = {
@@ -9,21 +9,14 @@ const initialState = {
   error: null,
 };
 
-// Mock users for testing
-const mockUsers = [
+// Only the admin account is hardcoded
+const mockAdmins = [
   {
-    id: 1,
+    id: "admin-1",
     email: "admin@school.ma",
     password: "password",
     name: "Administrateur",
     role: "admin",
-  },
-  {
-    id: 2,
-    email: "teacher@school.ma",
-    password: "password",
-    name: "Professeur",
-    role: "prof",
   },
 ];
 
@@ -55,26 +48,38 @@ const authSlice = createSlice({
 export const { loginStart, loginSuccess, loginFailure, logout } =
   authSlice.actions;
 
-// Thunk for handling mock login
-export const loginUser = (credentials) => async (dispatch) => {
+// Thunk — checks admins first, then dynamic profs from profSlice
+export const loginUser = (credentials) => async (dispatch, getState) => {
   dispatch(loginStart());
 
   return new Promise((resolve) => {
-    // Simulate API call delay
     setTimeout(() => {
-      const user = mockUsers.find(
+      // 1. Check hardcoded admins
+      const admin = mockAdmins.find(
         (u) =>
-          u.email === credentials.email && u.password === credentials.password,
+          u.email === credentials.email && u.password === credentials.password
       );
-
-      if (user) {
-        // Don't store the password in state/local storage
-        const { password, ...userWithoutPassword } = user;
-        dispatch(loginSuccess(userWithoutPassword));
-      } else {
-        dispatch(loginFailure("Email ou mot de passe incorrect"));
+      if (admin) {
+        const { password, ...safe } = admin;
+        dispatch(loginSuccess(safe));
+        resolve();
+        return;
       }
 
+      // 2. Check dynamic profs from Redux store
+      const profs = getState().profs.items;
+      const prof = profs.find(
+        (p) =>
+          p.email === credentials.email && p.password === credentials.password
+      );
+      if (prof) {
+        const { password, ...safe } = prof;
+        dispatch(loginSuccess({ ...safe, role: "prof" }));
+        resolve();
+        return;
+      }
+
+      dispatch(loginFailure("Email ou mot de passe incorrect"));
       resolve();
     }, 800);
   });

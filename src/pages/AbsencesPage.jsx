@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AbsenceForm from "../components/AbsenceForm.jsx";
 import AbsenceList from "../components/AbsenceList.jsx";
 import Filters from "../components/Filters.jsx";
+import CalendarHistory from "../components/CalendarHistory.jsx";
 
 // Absences Page
 
 function AbsencesPage() {
+  const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [editingAbsence, setEditingAbsence] = useState(null);
   const [filters, setFilters] = useState({
@@ -17,11 +20,6 @@ function AbsencesPage() {
 
   const handleEdit = (absence) => {
     setEditingAbsence(absence);
-    setShowForm(true);
-  };
-
-  const handleAddNew = () => {
-    setEditingAbsence(null);
     setShowForm(true);
   };
 
@@ -54,7 +52,7 @@ function AbsencesPage() {
         {!showForm && (
           <button
             className="btn btn-dark-navy rounded-pill px-4 py-2 shadow fw-bold d-flex align-items-center"
-            onClick={handleAddNew}
+            onClick={() => navigate('/saisie')}
           >
             <i className="bi bi-plus-circle-fill me-2 fs-5"></i>
             Déclarer une Absence
@@ -73,20 +71,24 @@ function AbsencesPage() {
           </div>
         </div>
       ) : (
-        <div className="row g-4">
-          <div className="col-lg-3">
-            <Filters onFilterChange={handleFilterChange} />
+        <>
+          <div className="row g-4 mb-5">
+            <div className="col-lg-3">
+              <Filters onFilterChange={handleFilterChange} />
+            </div>
+            <div className="col-lg-9">
+              <AbsenceList
+                onEdit={handleEdit}
+                filterType={filters.filterType}
+                dateRange={filters.dateRange}
+                stagiaireFilter={filters.stagiaireFilter}
+                filiereFilter={filters.filiereFilter}
+              />
+            </div>
           </div>
-          <div className="col-lg-9">
-            <AbsenceList
-              onEdit={handleEdit}
-              filterType={filters.filterType}
-              dateRange={filters.dateRange}
-              stagiaireFilter={filters.stagiaireFilter}
-              filiereFilter={filters.filiereFilter}
-            />
-          </div>
-        </div>
+          
+          <CalendarHistory />
+        </>
       )}
     </div>
   );

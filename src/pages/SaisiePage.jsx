@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -9,11 +9,26 @@ function SaisiePage() {
   const dispatch = useDispatch();
   const stagiaires = useSelector((state) => state.stagiaires.items);
   const allAbsences = useSelector((state) => state.absences.items);
+  const { user } = useSelector((state) => state.auth);
+
+  const isProf = user?.role === 'prof';
+  // Filières assigned to this prof (empty = unrestricted)
+  const profFilieres = isProf && user?.filieres?.length > 0 ? user.filieres : [];
+  // Lock the select when prof has exactly one filière
+  const lockedFiliere = profFilieres.length === 1 ? profFilieres[0] : null;
 
   // Date range: [startDate, endDate]
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
-  const [filiere, setFiliere] = useState("");
+  const [filiere, setFiliere] = useState(lockedFiliere || "");
   const [showCalendar, setShowCalendar] = useState(false);
+
+  // If the prof's assigned filière changes (e.g. admin edits), sync to state
+  useEffect(() => {
+    if (lockedFiliere) {
+      setFiliere(lockedFiliere);
+      setSaisieData({});
+    }
+  }, [lockedFiliere]);
 
   // saisieData: { [`${stagId}|${dateStr}|${slotId}`]: boolean }
   const [saisieData, setSaisieData] = useState({});
@@ -50,8 +65,11 @@ function SaisiePage() {
   ];
 
   const filieres = useMemo(() => {
-    return [...new Set(stagiaires.map((s) => s.filiere))];
-  }, [stagiaires]);
+    const all = [...new Set(stagiaires.map((s) => s.filiere))].sort();
+    // If prof has assigned filières, restrict the list
+    if (profFilieres.length > 0) return all.filter((f) => profFilieres.includes(f));
+    return all;
+  }, [stagiaires, profFilieres]);
 
   const filteredStagiaires = useMemo(() => {
     if (!filiere) return [];
@@ -186,7 +204,7 @@ function SaisiePage() {
               </label>
               <div className="input-group input-group-lg">
                 <span className="input-group-text bg-white border-end-0">
-                  <i className="bi bi-mortarboard-fill text-dark-navy"></i>
+                  <i className={`bi ${lockedFiliere ? 'bi-lock-fill text-warning' : 'bi-mortarboard-fill text-dark-navy'}`}></i>
                 </span>
                 <select
                   className="form-select border-start-0"
@@ -196,6 +214,7 @@ function SaisiePage() {
                     setSaisieData({});
                   }}
                   required
+                  disabled={!!lockedFiliere}
                 >
                   <option value="">Sélectionner une filière</option>
                   {filieres.map((f, i) => (
@@ -205,6 +224,12 @@ function SaisiePage() {
                   ))}
                 </select>
               </div>
+              {lockedFiliere && (
+                <small className="text-muted d-block mt-1" style={{ fontSize: '0.72rem' }}>
+                  <i className="bi bi-info-circle me-1"></i>
+                  Filière assignée par l'administrateur
+                </small>
+              )}
             </div>
             <div className="col-lg-5">
               <label className="form-label fw-bold small text-muted text-uppercase">

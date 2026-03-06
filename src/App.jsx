@@ -5,6 +5,7 @@ import StagiairesPage from "./pages/StagiairesPage.jsx";
 import AbsencesPage from "./pages/AbsencesPage.jsx";
 import StatisticsPage from "./pages/StatisticsPage.jsx";
 import SaisiePage from "./pages/SaisiePage.jsx";
+import ProfsPage from "./pages/ProfsPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
@@ -23,6 +24,10 @@ function AppLayout() {
           <Route
             path="/statistiques"
             element={user?.role === 'admin' ? <StatisticsPage /> : <Navigate to="/" replace />}
+          />
+          <Route
+            path="/profs"
+            element={user?.role === 'admin' ? <ProfsPage /> : <Navigate to="/" replace />}
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

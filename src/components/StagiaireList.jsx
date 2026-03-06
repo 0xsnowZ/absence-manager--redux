@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteStagiaire } from "../store/stagiaireSlice.jsx";
 import { deleteAbsence } from "../store/absenceSlice.jsx";
 
 // Stagiaire List Component
 
-function StagiaireList({ onEdit }) {
+function StagiaireList({ onEdit, filiere, onBack }) {
   const dispatch = useDispatch();
   const stagiaires = useSelector((state) => state.stagiaires.items);
   const absences = useSelector((state) => state.absences.items);
@@ -16,16 +16,16 @@ function StagiaireList({ onEdit }) {
     return absences.filter((a) => a.idstag === stagiaireId).length;
   };
 
-  const filteredStagiaires = stagiaires.filter(
-    (s) =>
-      s.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.filiere.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredStagiaires = useMemo(() => {
+    return stagiaires
+      .filter((s) => s.filiere === filiere)
+      .filter((s) => s.nom.toLowerCase().includes(searchTerm.toLowerCase()));
+  }, [stagiaires, filiere, searchTerm]);
 
   const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, stagiaires.length]);
+  }, [searchTerm, filiere, stagiaires.length]);
 
   const itemsPerPage = 8;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -43,14 +43,23 @@ function StagiaireList({ onEdit }) {
   };
 
   return (
-    <div className="card border-0 shadow-sm overflow-hidden">
+    <div className="card border-0 shadow-sm overflow-hidden anim-fade-in">
       <div className="card-header bg-white py-3 border-bottom-0 d-flex justify-content-between align-items-center">
-        <h5 className="mb-0 fw-bold text-dark d-flex align-items-center">
-          <span className="bg-dark-navy text-white p-2 rounded me-3 d-flex shadow-sm">
-            <i className="bi bi-people-fill"></i>
-          </span>
-          Effectif des Stagiaires
-        </h5>
+        <div className="d-flex align-items-center">
+          <button 
+            className="btn btn-sm btn-outline-dark-navy rounded-pill me-3 px-3 d-flex align-items-center"
+            onClick={onBack}
+          >
+            <i className="bi bi-arrow-left me-1"></i>
+            Retour
+          </button>
+          <h5 className="mb-0 fw-bold text-dark d-flex align-items-center">
+            <span className="bg-dark-navy text-white p-2 rounded me-3 d-flex shadow-sm">
+              <i className="bi bi-mortarboard-fill"></i>
+            </span>
+            Stagiaires - {filiere}
+          </h5>
+        </div>
         <span className="badge rounded-pill bg-soft-dark-navy text-dark-navy px-3 py-2 border shadow-none">
           {filteredStagiaires.length} Inscrits
         </span>
@@ -64,7 +73,7 @@ function StagiaireList({ onEdit }) {
             <input
               type="text"
               className="form-control border-0 bg-white"
-              placeholder="Rechercher par nom ou filière..."
+              placeholder={`Rechercher un stagiaire dans ${filiere}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{ boxShadow: 'none' }}
@@ -78,7 +87,6 @@ function StagiaireList({ onEdit }) {
               <tr>
                 <th className="ps-4 py-3">ID</th>
                 <th className="py-3">Nom Complet</th>
-                <th className="py-3">Filière</th>
                 <th className="py-3 text-center">Genre</th>
                 <th className="py-3 text-center">Absences</th>
                 <th className="py-3 text-end pe-4">Actions</th>
@@ -87,7 +95,7 @@ function StagiaireList({ onEdit }) {
             <tbody>
               {filteredStagiaires.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="text-center text-muted py-5">
+                  <td colSpan="5" className="text-center text-muted py-5">
                     <i className="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
                     <span className="fw-medium">Aucun stagiaire trouvé</span>
                   </td>
@@ -103,11 +111,6 @@ function StagiaireList({ onEdit }) {
                         </div>
                         <span className="fw-bold text-dark">{stagiaire.nom}</span>
                       </div>
-                    </td>
-                    <td>
-                      <span className="badge rounded-pill bg-light text-dark px-3 py-1 border fw-normal">
-                        {stagiaire.filiere}
-                      </span>
                     </td>
                     <td className="text-center">
                       {stagiaire.sexe === "m" ? (
@@ -129,13 +132,15 @@ function StagiaireList({ onEdit }) {
                     </td>
                     <td className="text-end pe-4">
                       <div className="d-flex justify-content-end gap-2">
-                        <button
-                          className="btn-action-round btn-edit shadow-sm"
-                          onClick={() => onEdit(stagiaire)}
-                          title="Modifier"
-                        >
-                          <i className="bi bi-pencil-fill"></i>
-                        </button>
+                        {user?.role === 'admin' && (
+                          <button
+                            className="btn-action-round btn-edit shadow-sm"
+                            onClick={() => onEdit(stagiaire)}
+                            title="Modifier"
+                          >
+                            <i className="bi bi-pencil-fill"></i>
+                          </button>
+                        )}
                         {user?.role === 'admin' && (
                           <button
                             className="btn-action-round btn-delete shadow-sm"
@@ -188,6 +193,8 @@ function StagiaireList({ onEdit }) {
         )}
       </div>
       <style>{`
+        .anim-fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .bg-soft-primary { background-color: #e7f1ff; }
         .bg-soft-danger { background-color: #fceaea; }
         .bg-soft-warning { background-color: #fff8e6; }
@@ -200,6 +207,8 @@ function StagiaireList({ onEdit }) {
         .btn-edit:hover { background-color: #0d6efd; color: #fff; transform: scale(1.1); }
         .btn-delete { background-color: #fff; color: #dc3545; border: 1px solid #fceaea; }
         .btn-delete:hover { background-color: #dc3545; color: #fff; transform: scale(1.1); }
+        .btn-outline-dark-navy { color: #0A121A; border-color: #0A121A; }
+        .btn-outline-dark-navy:hover { background-color: #0A121A; color: #fff; }
         .transition-all { transition: all 0.2s ease-in-out; }
       `}</style>
     </div>

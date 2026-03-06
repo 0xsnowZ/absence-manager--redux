@@ -1,27 +1,51 @@
-import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { addStagiaire, updateStagiaire } from "../store/stagiaireSlice.jsx";
 
 // Stagiaire Form Component
 
+const NEW_FILIERE_KEY = "__new__";
+
 function StagiaireForm({ stagiaire, onCancel, onSave }) {
   const dispatch = useDispatch();
+  const stagiaires = useSelector((state) => state.stagiaires.items);
+  const { user } = useSelector((state) => state.auth);
+  
+  const isProf = user?.role === 'prof';
+  const profFilieres = isProf && user?.filieres?.length > 0 ? user.filieres : [];
+
+  // Derive sorted unique filières from existing stagiaires, but filter for profs
+  const filieres = useMemo(() => {
+    const all = [...new Set(stagiaires.map((s) => s.filiere))].sort();
+    if (profFilieres.length > 0) {
+      return all.filter(f => profFilieres.includes(f));
+    }
+    return all;
+  }, [stagiaires, profFilieres]);
+
   const [formData, setFormData] = useState({
     nom: "",
-    filiere: "",
+    filiere: profFilieres.length === 1 ? profFilieres[0] : "",
     sexe: "m",
   });
   const [errors, setErrors] = useState({});
+  // Controls whether the "new filière" text input is shown
+  const [showCustomInput, setShowCustomInput] = useState(false);
 
   useEffect(() => {
     if (stagiaire) {
+      const isExisting = filieres.includes(stagiaire.filiere);
+      setShowCustomInput(!isExisting && !!stagiaire.filiere);
       setFormData({
         nom: stagiaire.nom || "",
         filiere: stagiaire.filiere || "",
         sexe: stagiaire.sexe || "m",
       });
+    } else if (profFilieres.length === 1) {
+       // Reset for new stagiaire if prof has exactly one filiere
+       setFormData(p => ({ ...p, filiere: profFilieres[0] }));
     }
-  }, [stagiaire]);
+  }, [stagiaire, filieres, profFilieres]);
 
   const validate = () => {
     const newErrors = {};
@@ -53,6 +77,18 @@ function StagiaireForm({ stagiaire, onCancel, onSave }) {
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: null }));
     }
+  };
+
+  const handleFiliereSelect = (e) => {
+    const val = e.target.value;
+    if (val === NEW_FILIERE_KEY) {
+      setShowCustomInput(true);
+      setFormData((prev) => ({ ...prev, filiere: "" }));
+    } else {
+      setShowCustomInput(false);
+      setFormData((prev) => ({ ...prev, filiere: val }));
+    }
+    if (errors.filiere) setErrors((prev) => ({ ...prev, filiere: null }));
   };
 
   return (
@@ -89,15 +125,35 @@ function StagiaireForm({ stagiaire, onCancel, onSave }) {
               <span className="input-group-text bg-light border-end-0">
                 <i className="bi bi-mortarboard text-dark-navy"></i>
               </span>
-              <input
-                type="text"
-                className={`form-control form-control-lg border-start-0 bg-light ${errors.filiere ? "is-invalid" : ""}`}
-                name="filiere"
-                value={formData.filiere}
-                onChange={handleChange}
-                placeholder="Ex: DD105"
-              />
+              <select
+                className={`form-select form-select-lg border-start-0 bg-light ${errors.filiere ? "is-invalid" : ""}`}
+                value={showCustomInput ? NEW_FILIERE_KEY : formData.filiere}
+                onChange={handleFiliereSelect}
+              >
+                <option value="">-- Sélectionner une filière --</option>
+                {filieres.map((f) => (
+                  <option key={f} value={f}>{f}</option>
+                ))}
+                {!isProf && <option value={NEW_FILIERE_KEY}>✏️ Nouvelle filière...</option>}
+              </select>
             </div>
+            {/* Custom filière text input, shown when user picks "Nouvelle filière..." */}
+            {showCustomInput && !isProf && (
+              <div className="input-group mt-2">
+                <span className="input-group-text bg-light border-end-0">
+                  <i className="bi bi-pencil-fill text-dark-navy"></i>
+                </span>
+                <input
+                  type="text"
+                  className={`form-control form-control-lg border-start-0 bg-light ${errors.filiere ? "is-invalid" : ""}`}
+                  name="filiere"
+                  value={formData.filiere}
+                  onChange={handleChange}
+                  placeholder="Ex: DD105"
+                  autoFocus
+                />
+              </div>
+            )}
             {errors.filiere && (
               <div className="text-danger small mt-1">{errors.filiere}</div>
             )}

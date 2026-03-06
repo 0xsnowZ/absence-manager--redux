@@ -15,7 +15,13 @@ function Filters({ onFilterChange }) {
   const [activeFilters, setActiveFilters] = useState([]);
 
   // Extract unique filières
-  const filieres = [...new Set(stagiaires.map((s) => s.filiere))];
+  const filieres = useMemo(() => [...new Set(stagiaires.map((s) => s.filiere))].sort(), [stagiaires]);
+
+  // When a Filière is selected, only show its trainees in the Stagiaire dropdown
+  const filteredStagiaires = useMemo(() => {
+    if (!filiereFilter) return stagiaires;
+    return stagiaires.filter((s) => s.filiere === filiereFilter);
+  }, [stagiaires, filiereFilter]);
 
   const applyFilters = () => {
     const filters = {
@@ -78,7 +84,10 @@ function Filters({ onFilterChange }) {
           <select
             className="form-select bg-light border-0"
             value={filiereFilter}
-            onChange={(e) => setFiliereFilter(e.target.value)}
+            onChange={(e) => {
+            setFiliereFilter(e.target.value);
+            setStagiaireFilter(""); // reset stagiaire when filière changes
+          }}
           >
             <option value="">Toutes les filières</option>
             {filieres.map((f, index) => (
@@ -97,10 +106,12 @@ function Filters({ onFilterChange }) {
             value={stagiaireFilter}
             onChange={(e) => setStagiaireFilter(e.target.value)}
           >
-            <option value="">Tous les stagiaires</option>
-            {stagiaires.map((s) => (
+            <option value="">
+              {filiereFilter ? `Tous (${filteredStagiaires.length})` : "Tous les stagiaires"}
+            </option>
+            {filteredStagiaires.map((s) => (
               <option key={s.id} value={s.id}>
-                {s.nom} ({s.filiere})
+                {s.nom}{!filiereFilter && ` (${s.filiere})`}
               </option>
             ))}
           </select>

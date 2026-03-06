@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../store/authSlice.jsx";
@@ -6,6 +6,7 @@ import { logout } from "../store/authSlice.jsx";
 // Navigation Component
 function Navigation() {
   const { user } = useSelector((state) => state.auth);
+  const stagiaires = useSelector((state) => state.stagiaires.items);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -18,8 +19,14 @@ function Navigation() {
     { id: "stagiaires", label: "Stagiaires", icon: "bi-people", path: "/" },
     { id: "absences", label: "Absences", icon: "bi-calendar-x", path: "/absences" },
     { id: "saisie", label: "Saisie", icon: "bi-pencil-square", path: "/saisie" },
-    ...(user && user.role === 'admin' ? [{ id: "statistics", label: "Statistiques", icon: "bi-graph-up", path: "/statistiques" }] : []),
+    ...(user?.role === 'admin' ? [
+      { id: "profs", label: "Professeurs", icon: "bi-person-gear", path: "/profs" },
+      { id: "statistics", label: "Statistiques", icon: "bi-graph-up", path: "/statistiques" },
+    ] : []),
   ];
+
+  // Show prof's assigned filières as badges in navbar
+  const profFilieres = user?.role === 'prof' && user?.filieres?.length > 0 ? user.filieres : [];
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark shadow-sm py-3 mb-4" style={{ backgroundColor: '#0A121A' }}>
@@ -62,11 +69,17 @@ function Navigation() {
               <li className="nav-item ms-lg-3 mt-3 mt-lg-0 border-start-lg border-white-50 ps-lg-3 d-flex align-items-center">
                 <div className="d-flex align-items-center text-white me-3">
                   <div className="bg-white text-dark rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold shadow-sm" style={{ width: '32px', height: '32px', fontSize: '14px' }}>
-                    {user.name.charAt(0)}
+                    {(user.name || user.nom || "U").charAt(0).toUpperCase()}
                   </div>
                   <div className="lh-sm d-none d-xl-block">
-                    <div className="fw-bold fs-6">{user.name}</div>
-                    <div className="small opacity-75 text-uppercase" style={{ fontSize: '0.7rem' }}>{user.role}</div>
+                    <div className="fw-bold fs-6">{user.name || user.nom}</div>
+                    <div className="d-flex align-items-center gap-1 flex-wrap">
+                      <span className="small opacity-75 text-uppercase" style={{ fontSize: '0.7rem' }}>{user.role}</span>
+                      {/* Show prof's filière badges */}
+                      {profFilieres.map((f) => (
+                        <span key={f} className="badge rounded-pill prof-badge" style={{ fontSize: '0.6rem' }}>{f}</span>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <button
@@ -88,11 +101,10 @@ function Navigation() {
         .transition-all { transition: all 0.2s ease-in-out; }
         .hover-opacity-100:hover { opacity: 1 !important; }
         .border-white-50 { border-color: rgba(255,255,255,0.2) !important; }
-        @media (min-width: 992px) {
-          .border-start-lg { border-left: 1px solid; }
-        }
+        @media (min-width: 992px) { .border-start-lg { border-left: 1px solid; } }
         .hover-lift { transition: transform 0.2s; }
         .hover-lift:hover { transform: translateY(-2px); }
+        .prof-badge { background-color: #f59e0b; color: #000; }
       `}</style>
     </nav>
   );
