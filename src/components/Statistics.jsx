@@ -36,7 +36,10 @@ function Statistics() {
           <div className="card border-0 shadow-sm h-100 overflow-hidden transition-all hover-lift">
             <div className="card-body p-4">
               <div className="d-flex align-items-center mb-3">
-                <div className="bg-soft-primary text-primary p-3 rounded-circle me-3 shadow-sm">
+                <div
+                  className="bg-soft-primary text-primary rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center"
+                  style={{ width: '60px', height: '60px', flexShrink: 0 }}
+                >
                   <i className="bi bi-calendar-x-fill fs-4"></i>
                 </div>
                 <div>
@@ -57,7 +60,10 @@ function Statistics() {
           <div className="card border-0 shadow-sm h-100 overflow-hidden transition-all hover-lift">
             <div className="card-body p-4">
               <div className="d-flex align-items-center mb-3">
-                <div className="bg-soft-success text-success p-3 rounded-circle me-3 shadow-sm">
+                <div
+                  className="bg-soft-success text-success rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center"
+                  style={{ width: '60px', height: '60px', flexShrink: 0 }}
+                >
                   <i className="bi bi-check-circle-fill fs-4"></i>
                 </div>
                 <div>
@@ -78,7 +84,10 @@ function Statistics() {
           <div className="card border-0 shadow-sm h-100 overflow-hidden transition-all hover-lift">
             <div className="card-body p-4">
               <div className="d-flex align-items-center mb-3">
-                <div className="bg-soft-danger text-danger p-3 rounded-circle me-3 shadow-sm">
+                <div
+                  className="bg-soft-danger text-danger rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center"
+                  style={{ width: '60px', height: '60px', flexShrink: 0 }}
+                >
                   <i className="bi bi-x-circle-fill fs-4"></i>
                 </div>
                 <div>
@@ -101,9 +110,12 @@ function Statistics() {
         <div className="col-lg-5">
           <div className="card border-0 shadow-sm h-100">
             <div className="card-header bg-white py-3 border-bottom-0 d-flex align-items-center">
-              <span className="bg-info text-white p-2 rounded me-3 d-flex shadow-sm">
+              <div
+                className="bg-info text-white rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center"
+                style={{ width: '48px', height: '48px', flexShrink: 0 }}
+              >
                 <i className="bi bi-pie-chart-fill"></i>
-              </span>
+              </div>
               <h5 className="mb-0 fw-bold">Répartition Analytique</h5>
             </div>
             <div className="card-body pt-0">
@@ -158,9 +170,12 @@ function Statistics() {
           <div className="card border-0 shadow-sm h-100">
             <div className="card-header bg-white py-4 border-bottom-0 d-flex justify-content-between align-items-center">
               <h5 className="mb-0 fw-bold text-dark d-flex align-items-center">
-                <span className="bg-soft-danger text-danger p-2 rounded me-3 d-flex">
+                <div
+                  className="bg-soft-danger text-danger rounded-circle me-3 d-flex align-items-center justify-content-center"
+                  style={{ width: '48px', height: '48px', flexShrink: 0 }}
+                >
                   <i className="bi bi-trophy-fill"></i>
-                </span>
+                </div>
                 Last Absences
               </h5>
             </div>

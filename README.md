@@ -1,82 +1,71 @@
-# Absence Manager - Redux
+# Absence Manager - Pro Edition
 
-A React-based application for managing intern (stagiaire) absences, built with **React**, **Redux Toolkit**, and **Bootstrap 5**.
+A modern, professional React-based application for managing student absences, featuring a premium aesthetic, bulk entry system, and role-based access control.
 
-## Features
+## 🚀 Key Features
 
-- **Stagiaire Management** – Add, edit, and delete interns with name, filière, and gender details
-- **Absence Tracking** – Record absences with date, hours, and justified/unjustified status
-- **Filtering** – Filter absences by type, date, period, or specific stagiaire
-- **Statistics** – View detailed absence statistics including totals, justified/unjustified breakdown, and per-stagiaire analytics
+- **Double-Entry Mode**
+    - **Saisie Professionnelle** – Bulk entry using an attendance-book style grid (S1-S4 slots)
+    - **Individual Management** – Modal-based entry for detailed absence tracking
+- **User Authentication & Roles (RBAC)**
+    - **Admin** – Full access (Statistics, Delete, Management)
+    - **Professeur** – Recording & Viewing only
+- **Intelligent Statistics** – Visual dashboard with justification rates and chronological recent absences
+- **Advanced Lists** – Optimized with search, filtering, and pagination for high performance
+- **Premium UI** – Clean, professional design with smooth transitions and micro-animations
 
-## Tech Stack
+## 🛠 Tech Stack
 
-- **React 18** – UI library
-- **Redux Toolkit** – State management
-- **React-Redux** – React bindings for Redux
-- **Bootstrap 5** – Styling & responsive layout
-- **Bootstrap Icons** – Icon set
-- **Vite** – Build tool & dev server
+- **React 18** – UI Framework
+- **Redux Toolkit** – State Architecture
+- **React Router DOM 6** – Routing & Protection
+- **Bootstrap 5** – Responsive Layout & Core UI
+- **Bootstrap Icons** – Iconography
+- **Vite** – High-speed Build Tool
 
-## Project Structure
+## 🔐 Authentication (Mock Data)
+
+The app is pre-configured with the following accounts for testing:
+
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin@school.ma` | `password` |
+| **Professeur** | `teacher@school.ma` | `password` |
+
+## 📂 Project Structure
 
 ```
 absence-manager/
-├── index.html
-├── package.json
-├── vite.config.js
-└── src/
-    ├── index.jsx              # Entry point
-    ├── App.jsx                # Main app component
-    ├── components/
-    │   ├── AbsenceForm.jsx    # Form to add/edit absences
-    │   ├── AbsenceList.jsx    # Table listing all absences
-    │   ├── Filters.jsx        # Absence filter controls
-    │   ├── Navigation.jsx     # Top navbar
-    │   ├── StagiaireForm.jsx  # Form to add/edit stagiaires
-    │   ├── StagiaireList.jsx  # Table listing all stagiaires
-    │   └── Statistics.jsx     # Statistics dashboard
-    ├── pages/
-    │   ├── AbsencesPage.jsx   # Absences page layout
-    │   ├── StagiairesPage.jsx # Stagiaires page layout
-    │   └── StatisticsPage.jsx # Statistics page layout
-    ├── store/
-    │   ├── absenceSlice.jsx   # Redux slice for absences
-    │   ├── stagiaireSlice.jsx # Redux slice for stagiaires
-    │   └── store.jsx          # Redux store configuration
-    └── utils/
-        └── data.jsx           # Initial seed data
+├── src/
+│   ├── components/            # Reusable UI Components
+│   │   ├── Navigation.jsx     # Dynamic Navbar (RBAC)
+│   │   ├── ProtectedRoute.jsx # Route Guard
+│   │   └── ...
+│   ├── pages/                 # Full Page Views
+│   │   ├── LoginPage.jsx      # Auth Entrance
+│   │   ├── SaisiePage.jsx     # Bulk Entry Grid
+│   │   └── ...
+│   ├── store/                 # Redux State Management
+│   │   ├── authSlice.jsx      # Auth & Roles Logic
+│   │   ├── absenceSlice.jsx
+│   │   └── ...
+│   └── utils/
+│       └── data.jsx           # Mock Data Generator
 ```
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v16+)
-- npm
-
-### Installation
+## ⚙️ Installation
 
 ```bash
+# Clone
 git clone https://github.com/0xsnowZ/absence-manager--redux.git
 cd absence-manager--redux
+
+# Install & Run
 npm install
-```
-
-### Run Development Server
-
-```bash
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173/`.
-
-### Build for Production
-
-```bash
-npm run build
-npm run preview
-```
+The app will launch at `http://localhost:5173/`. You will be automatically redirected to the Login page.
 
 ## License
 

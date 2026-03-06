@@ -11,8 +11,8 @@ const initialState = {
 
 // Mock users for testing
 const mockUsers = [
-    { id: 1, email: 'admin@school.ma', password: 'password', name: 'Admin Principal', role: 'admin' },
-    { id: 2, email: 'teacher@school.ma', password: 'password', name: 'Prof', role: 'teacher' },
+    { id: 1, email: 'admin@school.ma', password: 'password', name: 'Administrateur', role: 'admin' },
+    { id: 2, email: 'teacher@school.ma', password: 'password', name: 'Professeur', role: 'prof' },
 ];
 
 const authSlice = createSlice({

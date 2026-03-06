@@ -34,11 +34,18 @@ function LoginPage() {
             <div className="card shadow-lg border-0" style={{ maxWidth: '450px', width: '100%', borderRadius: '1rem' }}>
                 <div className="card-body p-5">
                     <div className="text-center mb-5">
-                        <div className="bg-primary text-white p-3 rounded-circle d-inline-flex mb-3 shadow-sm">
-                            <i className="bi bi-shield-lock-fill fs-2"></i>
+                        <div
+                            className="bg-gradient-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-lg"
+                            style={{
+                                background: 'linear-gradient(45deg, #0d6efd, #0dcaf0)',
+                                width: '80px',
+                                height: '80px'
+                            }}
+                        >
+                            <i className="bi bi-person-lock fs-1"></i>
                         </div>
-                        <h2 className="fw-bold mb-1">Connexion</h2>
-                        <p className="text-muted">Système de Gestion des Absences</p>
+                        <h2 className="fw-bold mb-1">Espace Membres</h2>
+                        <p className="text-muted small text-uppercase fw-bold tracking-wider">Gestion des Absences</p>
                     </div>
 
                     {error && (

@@ -80,6 +80,13 @@ function SaisiePage() {
         return localDate.toISOString().split('T')[0];
     };
 
+    const handleReset = () => {
+        setSaisieData({});
+        setFiliere("");
+        setDateRange([new Date(), new Date()]);
+        setSuccessMessage("");
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!dateColumns.length || !filiere) return;
@@ -125,7 +132,7 @@ function SaisiePage() {
             <div className="mb-4">
                 <h2 className="fw-bold">
                     <i className="bi bi-person-badge me-2 text-primary"></i>
-                    Registre de Présence 
+                    Registre de Présence
                 </h2>
                 <p className="text-muted">
                     Saisie par séances (S1-S4) de 2 heures chacune. Cliquez sur une case pour marquer une absence.
@@ -199,7 +206,7 @@ function SaisiePage() {
                             </div>
                         </div>
                         <div className="col-lg-3">
-                            <button className="btn btn-outline-secondary btn-lg w-100" onClick={() => setSaisieData({})}>
+                            <button className="btn btn-outline-secondary btn-lg w-100" type="button" onClick={handleReset}>
                                 <i className="bi bi-x-lg me-1"></i> Réinitialiser
                             </button>
                         </div>
