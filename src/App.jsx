@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Navigation from "./components/Navigation.jsx";
 import StagiairesPage from "./pages/StagiairesPage.jsx";

@@ -67,6 +67,29 @@ npm run dev
 
 The app will launch at `http://localhost:5173/`. You will be automatically redirected to the Login page.
 
+## 🌐 Deploy to GitHub Pages
+
+This project is configured to deploy automatically to GitHub Pages using GitHub Actions.
+
+### 1) Push to GitHub
+
+Push your code to the `main` branch of your repository.
+
+### 2) Enable Pages source
+
+In your GitHub repository:
+
+- Go to **Settings → Pages**
+- Under **Build and deployment**, set **Source** to **GitHub Actions**
+
+### 3) Trigger deployment
+
+Every push to `main` runs the workflow in `.github/workflows/deploy.yml` and publishes the `dist` folder.
+
+Your app URL will be:
+
+`https://<your-username>.github.io/absence-manager--redux/`
+
 ## License
 
 This project is for educational purposes.
