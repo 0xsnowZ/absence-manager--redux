@@ -18,189 +18,219 @@ function Statistics() {
     .filter((a) => !a.justifie)
     .reduce((sum, a) => sum + (a.heures || 2), 0);
 
-  // Get stagiaires with most absences
-  const stagiaireAbsences = stagiaires
-    .map((s) => {
-      const stagAbsences = absences.filter((a) => a.idstag === s.id);
-      return {
-        ...s,
-        absenceCount: stagAbsences.length,
-        totalHeures: stagAbsences.reduce((sum, a) => sum + (a.heures || 2), 0),
-      };
-    })
-    .sort((a, b) => b.absenceCount - a.absenceCount)
+  // Get most recent absences
+  const lastAbsences = [...absences]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 5);
 
+  const getStagiaireInfo = (idstag) => {
+    const s = stagiaires.find((st) => st.id === idstag);
+    return s ? s : { nom: "Inconnu", filiere: "-" };
+  };
+
   return (
-    <div>
+    <div className="stats-container">
       {/* Summary Cards */}
-      <div className="row mb-4">
-        <div className="col-md-4 mb-3">
-          <div className="card stat-card">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
+      <div className="row g-4 mb-5">
+        <div className="col-md-4">
+          <div className="card border-0 shadow-sm h-100 overflow-hidden transition-all hover-lift">
+            <div className="card-body p-4">
+              <div className="d-flex align-items-center mb-3">
+                <div className="bg-soft-primary text-primary p-3 rounded-circle me-3 shadow-sm">
+                  <i className="bi bi-calendar-x-fill fs-4"></i>
+                </div>
                 <div>
-                  <h6 className="text-muted mb-1">Total Absences</h6>
-                  <h3 className="mb-0">{totalAbsences}</h3>
-                  <small className="text-muted">{totalHeures} heures</small>
+                  <h6 className="text-muted mb-0 small fw-bold text-uppercase tracking-wider">Total Absences</h6>
+                  <h3 className="fw-bold mb-0 mt-1">{totalAbsences}</h3>
                 </div>
-                <div className="bg-primary bg-opacity-10 p-3 rounded">
-                  <i className="bi bi-calendar-x fs-3 text-primary"></i>
-                </div>
+              </div>
+              <div className="mt-2">
+                <span className="badge rounded-pill bg-light text-primary border px-3 py-1 fw-bold">
+                  {totalHeures} heures totales
+                </span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="col-md-4 mb-3">
-          <div className="card stat-card justified">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
+        <div className="col-md-4">
+          <div className="card border-0 shadow-sm h-100 overflow-hidden transition-all hover-lift">
+            <div className="card-body p-4">
+              <div className="d-flex align-items-center mb-3">
+                <div className="bg-soft-success text-success p-3 rounded-circle me-3 shadow-sm">
+                  <i className="bi bi-check-circle-fill fs-4"></i>
+                </div>
                 <div>
-                  <h6 className="text-muted mb-1">Justifiées</h6>
-                  <h3 className="mb-0 text-success">{justifiedAbsences}</h3>
-                  <small className="text-muted">{justifiedHeures} heures</small>
+                  <h6 className="text-muted mb-0 small fw-bold text-uppercase tracking-wider">Justifiées</h6>
+                  <h3 className="fw-bold mb-0 mt-1 text-success">{justifiedAbsences}</h3>
                 </div>
-                <div className="bg-success bg-opacity-10 p-3 rounded">
-                  <i className="bi bi-check-circle fs-3 text-success"></i>
-                </div>
+              </div>
+              <div className="mt-2">
+                <span className="badge rounded-pill bg-soft-success text-success border border-success px-3 py-1 fw-bold">
+                  {justifiedHeures}h validées
+                </span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="col-md-4 mb-3">
-          <div className="card stat-card unjustified">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
+        <div className="col-md-4">
+          <div className="card border-0 shadow-sm h-100 overflow-hidden transition-all hover-lift">
+            <div className="card-body p-4">
+              <div className="d-flex align-items-center mb-3">
+                <div className="bg-soft-danger text-danger p-3 rounded-circle me-3 shadow-sm">
+                  <i className="bi bi-x-circle-fill fs-4"></i>
+                </div>
                 <div>
-                  <h6 className="text-muted mb-1">Non Justifiées</h6>
-                  <h3 className="mb-0 text-danger">{unjustifiedAbsences}</h3>
-                  <small className="text-muted">
-                    {unjustifiedHeures} heures
-                  </small>
+                  <h6 className="text-muted mb-0 small fw-bold text-uppercase tracking-wider">Non Justifiées</h6>
+                  <h3 className="fw-bold mb-0 mt-1 text-danger">{unjustifiedAbsences}</h3>
                 </div>
-                <div className="bg-danger bg-opacity-10 p-3 rounded">
-                  <i className="bi bi-x-circle fs-3 text-danger"></i>
-                </div>
+              </div>
+              <div className="mt-2">
+                <span className="badge rounded-pill bg-soft-danger text-danger border border-danger px-3 py-1 fw-bold">
+                  {unjustifiedHeures}h à régulariser
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Progress Bars */}
-      <div className="card mb-4">
-        <div className="card-header bg-info text-white">
-          <h5 className="mb-0">
-            <i className="bi bi-pie-chart me-2"></i>
-            Répartition des Absences
-          </h5>
-        </div>
-        <div className="card-body">
-          {totalAbsences > 0 ? (
-            <>
-              <div className="mb-3">
-                <div className="d-flex justify-content-between mb-1">
-                  <span>Justifiées</span>
-                  <span>
-                    {Math.round((justifiedAbsences / totalAbsences) * 100)}%
-                  </span>
-                </div>
-                <div className="progress">
-                  <div
-                    className="progress-bar bg-success"
-                    role="progressbar"
-                    style={{
-                      width: `${(justifiedAbsences / totalAbsences) * 100}%`,
-                    }}
-                  >
-                    {justifiedAbsences}
+      {/* Progress & Ranking Grid */}
+      <div className="row g-4 mb-5">
+        <div className="col-lg-5">
+          <div className="card border-0 shadow-sm h-100">
+            <div className="card-header bg-white py-3 border-bottom-0 d-flex align-items-center">
+              <span className="bg-info text-white p-2 rounded me-3 d-flex shadow-sm">
+                <i className="bi bi-pie-chart-fill"></i>
+              </span>
+              <h5 className="mb-0 fw-bold">Répartition Analytique</h5>
+            </div>
+            <div className="card-body pt-0">
+              {totalAbsences > 0 ? (
+                <div className="px-2">
+                  <div className="mb-4">
+                    <div className="d-flex justify-content-between mb-2">
+                      <span className="fw-bold small text-muted text-uppercase">Taux de justification</span>
+                      <span className="badge bg-soft-success text-success rounded-pill px-3">
+                        {Math.round((justifiedAbsences / totalAbsences) * 100)}%
+                      </span>
+                    </div>
+                    <div className="progress rounded-pill shadow-none border" style={{ height: '12px' }}>
+                      <div
+                        className="progress-bar bg-success rounded-pill"
+                        role="progressbar"
+                        style={{
+                          width: `${(justifiedAbsences / totalAbsences) * 100}%`,
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                  <div className="mb-2">
+                    <div className="d-flex justify-content-between mb-2">
+                      <span className="fw-bold small text-muted text-uppercase">Taux d'irrégularité</span>
+                      <span className="badge bg-soft-danger text-danger rounded-pill px-3">
+                        {Math.round((unjustifiedAbsences / totalAbsences) * 100)}%
+                      </span>
+                    </div>
+                    <div className="progress rounded-pill shadow-none border" style={{ height: '12px' }}>
+                      <div
+                        className="progress-bar bg-danger rounded-pill"
+                        role="progressbar"
+                        style={{
+                          width: `${(unjustifiedAbsences / totalAbsences) * 100}%`,
+                        }}
+                      ></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="mb-3">
-                <div className="d-flex justify-content-between mb-1">
-                  <span>Non Justifiées</span>
-                  <span>
-                    {Math.round((unjustifiedAbsences / totalAbsences) * 100)}%
-                  </span>
+              ) : (
+                <div className="text-center py-5 text-muted">
+                  <i className="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
+                  Aucune donnée disponible
                 </div>
-                <div className="progress">
-                  <div
-                    className="progress-bar bg-danger"
-                    role="progressbar"
-                    style={{
-                      width: `${(unjustifiedAbsences / totalAbsences) * 100}%`,
-                    }}
-                  >
-                    {unjustifiedAbsences}
-                  </div>
-                </div>
-              </div>
-            </>
-          ) : (
-            <p className="text-muted text-center mb-0">
-              Aucune absence enregistrée
-            </p>
-          )}
+              )}
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* Top Stagiaires with Absences */}
-      <div className="card">
-        <div className="card-header bg-warning text-dark">
-          <h5 className="mb-0">
-            <i className="bi bi-trophy me-2"></i>
-            Stagiaires avec le plus d'absences
-          </h5>
-        </div>
-        <div className="card-body">
-          {stagiaireAbsences.filter((s) => s.absenceCount > 0).length === 0 ? (
-            <p className="text-muted text-center mb-0">
-              Aucune absence enregistrée
-            </p>
-          ) : (
-            <div className="table-responsive">
-              <table className="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Rang</th>
-                    <th>Stagiaire</th>
-                    <th>Filière</th>
-                    <th>Nb Absences</th>
-                    <th>Heures</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stagiaireAbsences
-                    .filter((s) => s.absenceCount > 0)
-                    .map((s, index) => (
-                      <tr key={s.id}>
-                        <td>
-                          {index === 0 && (
-                            <i className="bi bi-trophy-fill text-warning me-1"></i>
-                          )}
-                          #{index + 1}
-                        </td>
-                        <td>{s.nom}</td>
-                        <td>
-                          <span className="badge bg-info">{s.filiere}</span>
-                        </td>
-                        <td>
-                          <span className="badge bg-danger">
-                            {s.absenceCount}
-                          </span>
-                        </td>
-                        <td>{s.totalHeures}h</td>
+        <div className="col-lg-7">
+          <div className="card border-0 shadow-sm h-100">
+            <div className="card-header bg-white py-4 border-bottom-0 d-flex justify-content-between align-items-center">
+              <h5 className="mb-0 fw-bold text-dark d-flex align-items-center">
+                <span className="bg-soft-danger text-danger p-2 rounded me-3 d-flex">
+                  <i className="bi bi-trophy-fill"></i>
+                </span>
+                Last Absences
+              </h5>
+            </div>
+            <div className="card-body pt-0">
+              {lastAbsences.length === 0 ? (
+                <div className="text-center py-5 text-muted">
+                  <i className="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
+                  Aucun record d'absence
+                </div>
+              ) : (
+                <div className="table-responsive">
+                  <table className="table align-middle custom-table">
+                    <thead className="bg-light text-muted small text-uppercase fw-bold">
+                      <tr>
+                        <th className="ps-3 border-0">Date</th>
+                        <th className="border-0">Stagiaire</th>
+                        <th className="border-0 text-center">Heures</th>
+                        <th className="border-0 text-center pe-3">Statut</th>
                       </tr>
-                    ))}
-                </tbody>
-              </table>
+                    </thead>
+                    <tbody>
+                      {lastAbsences.map((absence) => {
+                        const stag = getStagiaireInfo(absence.idstag);
+                        const date = new Date(absence.date).toLocaleDateString("fr-FR");
+                        return (
+                          <tr key={absence.id}>
+                            <td className="ps-3 fw-medium text-muted">
+                              <i className="bi bi-calendar3 me-2 text-primary opacity-50"></i>
+                              {date}
+                            </td>
+                            <td>
+                              <span className="fw-bold text-dark d-block mb-0">{stag.nom}</span>
+                              <small className="text-muted">{stag.filiere}</small>
+                            </td>
+                            <td className="text-center fw-bold text-dark">
+                              {absence.heures || 2}h
+                            </td>
+                            <td className="text-center pe-3">
+                              {absence.justifie ? (
+                                <span className="badge rounded-pill bg-soft-success text-success px-3 py-1 border border-success">
+                                  Justifiée
+                                </span>
+                              ) : (
+                                <span className="badge rounded-pill bg-soft-danger text-danger px-3 py-1 border border-danger">
+                                  Non justifiée
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
+      <style>{`
+        .bg-soft-primary { background-color: #e7f1ff; }
+        .bg-soft-danger { background-color: #fceaea; }
+        .bg-soft-success { background-color: #e6f9ed; }
+        .bg-soft-warning { background-color: #fff8e6; }
+        .tracking-wider { letter-spacing: 0.05em; }
+        .hover-lift { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .hover-lift:hover { transform: translateY(-5px); }
+        .custom-table tbody tr { border-color: #f8f9fa; }
+        .custom-table tbody tr:last-child { border-bottom: none; }
+      `}</style>
     </div>
   );
 }

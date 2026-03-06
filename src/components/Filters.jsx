@@ -10,7 +10,11 @@ function Filters({ onFilterChange }) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [stagiaireFilter, setStagiaireFilter] = useState("");
+  const [filiereFilter, setFiliereFilter] = useState("");
   const [activeFilters, setActiveFilters] = useState([]);
+
+  // Extract unique filières
+  const filieres = [...new Set(stagiaires.map((s) => s.filiere))];
 
   const applyFilters = () => {
     const filters = {
@@ -18,6 +22,7 @@ function Filters({ onFilterChange }) {
       dateFilter: dateFilter || null,
       periodFilter: startDate || endDate ? { startDate, endDate } : null,
       stagiaireFilter: stagiaireFilter || null,
+      filiereFilter: filiereFilter || null,
     };
 
     const active = [];
@@ -30,6 +35,7 @@ function Filters({ onFilterChange }) {
       const stag = stagiaires.find((s) => s.id === parseInt(stagiaireFilter));
       if (stag) active.push(`Stagiaire: ${stag.nom}`);
     }
+    if (filiereFilter) active.push(`Filière: ${filiereFilter}`);
 
     setActiveFilters(active);
     onFilterChange(filters);
@@ -41,57 +47,59 @@ function Filters({ onFilterChange }) {
     setStartDate("");
     setEndDate("");
     setStagiaireFilter("");
+    setFiliereFilter("");
     setActiveFilters([]);
     onFilterChange({
       filterType: "all",
       dateFilter: null,
       periodFilter: null,
       stagiaireFilter: null,
+      filiereFilter: null,
     });
   };
 
   return (
-    <div className="card">
-      <div className="card-header bg-primary text-white">
-        <h5 className="mb-0">
-          <i className="bi bi-funnel me-2"></i>
-          Filtres
+    <div className="card border-0 shadow-sm">
+      <div className="card-header bg-dark text-white py-3">
+        <h5 className="mb-0 fw-bold small text-uppercase tracking-wider">
+          <i className="bi bi-funnel-fill me-2"></i>
+          Filtrer les Résultats
         </h5>
       </div>
-      <div className="card-body">
+      <div className="card-body p-4">
         {/* Filter by Justification */}
-        <div className="mb-3">
-          <label className="form-label">Type d'absence</label>
+        <div className="mb-4">
+          <label className="form-label fw-bold small text-muted text-uppercase">Type d'absence</label>
           <select
-            className="form-select"
+            className="form-select bg-light border-0"
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
           >
-            <option value="all">Toutes</option>
-            <option value="justified">Justifiées</option>
-            <option value="unjustified">Non justifiées</option>
+            <option value="all">Toutes les absences</option>
+            <option value="justified">Justifiées uniquement</option>
+            <option value="unjustified">Non justifiées uniquement</option>
           </select>
         </div>
 
         {/* Filter by Date */}
-        <div className="mb-3">
-          <label className="form-label">Date spécifique</label>
+        <div className="mb-4">
+          <label className="form-label fw-bold small text-muted text-uppercase">Date précise</label>
           <input
             type="date"
-            className="form-control"
+            className="form-control bg-light border-0"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
           />
         </div>
 
         {/* Filter by Period */}
-        <div className="mb-3">
-          <label className="form-label">Période</label>
-          <div className="row">
+        <div className="mb-4">
+          <label className="form-label fw-bold small text-muted text-uppercase">Période d'analyse</label>
+          <div className="row g-2">
             <div className="col-6">
               <input
                 type="date"
-                className="form-control"
+                className="form-control bg-light border-0"
                 placeholder="Du"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
@@ -100,7 +108,7 @@ function Filters({ onFilterChange }) {
             <div className="col-6">
               <input
                 type="date"
-                className="form-control"
+                className="form-control bg-light border-0"
                 placeholder="Au"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
@@ -110,10 +118,10 @@ function Filters({ onFilterChange }) {
         </div>
 
         {/* Filter by Stagiaire */}
-        <div className="mb-3">
-          <label className="form-label">Stagiaire</label>
+        <div className="mb-4">
+          <label className="form-label fw-bold small text-muted text-uppercase">Stagiaire</label>
           <select
-            className="form-select"
+            className="form-select bg-light border-0"
             value={stagiaireFilter}
             onChange={(e) => setStagiaireFilter(e.target.value)}
           >
@@ -126,25 +134,41 @@ function Filters({ onFilterChange }) {
           </select>
         </div>
 
+        {/* Filter by Filière */}
+        <div className="mb-4">
+          <label className="form-label fw-bold small text-muted text-uppercase">Filière</label>
+          <select
+            className="form-select bg-light border-0"
+            value={filiereFilter}
+            onChange={(e) => setFiliereFilter(e.target.value)}
+          >
+            <option value="">Toutes les filières</option>
+            {filieres.map((f, index) => (
+              <option key={index} value={f}>
+                {f}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* Action Buttons */}
-        <div className="d-flex gap-2">
-          <button className="btn btn-primary" onClick={applyFilters}>
-            <i className="bi bi-funnel-fill me-1"></i>
-            Appliquer
+        <div className="d-grid gap-2 mt-4">
+          <button className="btn btn-primary rounded-pill fw-bold py-2 shadow-sm" onClick={applyFilters}>
+            <i className="bi bi-check2-circle me-2"></i>
+            Appliquer les filtres
           </button>
-          <button className="btn btn-secondary" onClick={clearFilters}>
-            <i className="bi bi-x-circle me-1"></i>
-            Effacer
+          <button className="btn btn-outline-secondary rounded-pill fw-bold py-2" onClick={clearFilters}>
+            Réinitialiser
           </button>
         </div>
 
         {/* Active Filters */}
         {activeFilters.length > 0 && (
-          <div className="mt-3">
-            <small className="text-muted">Filtres actifs:</small>
-            <div className="d-flex flex-wrap gap-1 mt-1">
+          <div className="mt-4 pt-3 border-top">
+            <small className="text-muted text-uppercase fw-bold" style={{ fontSize: '0.65rem' }}>Filtres actifs:</small>
+            <div className="d-flex flex-wrap gap-1 mt-2">
               {activeFilters.map((filter, index) => (
-                <span key={index} className="badge bg-info">
+                <span key={index} className="badge rounded-pill bg-soft-primary text-primary px-3 border shadow-none" style={{ fontSize: '0.7rem' }}>
                   {filter}
                 </span>
               ))}
@@ -152,6 +176,10 @@ function Filters({ onFilterChange }) {
           </div>
         )}
       </div>
+      <style>{`
+        .bg-soft-primary { background-color: #e7f1ff; }
+        .tracking-wider { letter-spacing: 0.05em; }
+      `}</style>
     </div>
   );
 }

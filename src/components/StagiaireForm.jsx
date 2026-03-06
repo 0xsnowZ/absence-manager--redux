@@ -56,47 +56,57 @@ function StagiaireForm({ stagiaire, onCancel, onSave }) {
   };
 
   return (
-    <div className="card">
-      <div className="card-header bg-primary text-white">
-        <h5 className="mb-0">
-          <i className="bi bi-person-plus me-2"></i>
-          {stagiaire ? "Modifier Stagiaire" : "Nouveau Stagiaire"}
+    <div className="card border-0 shadow-lg overflow-hidden">
+      <div className="card-header bg-dark text-white py-3">
+        <h5 className="mb-0 fw-bold small text-uppercase tracking-wider">
+          <i className="bi bi-person-plus-fill me-2"></i>
+          {stagiaire ? "Modifier le Profil" : "Nouveau Stagiaire"}
         </h5>
       </div>
-      <div className="card-body">
+      <div className="card-body p-4">
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">Nom</label>
-            <input
-              type="text"
-              className={`form-control ${errors.nom ? "is-invalid" : ""}`}
-              name="nom"
-              value={formData.nom}
-              onChange={handleChange}
-              placeholder="Entrez le nom"
-            />
-            {errors.nom && <div className="invalid-feedback">{errors.nom}</div>}
+          <div className="mb-4">
+            <label className="form-label fw-bold small text-muted text-uppercase">Nom Complet</label>
+            <div className="input-group">
+              <span className="input-group-text bg-light border-end-0">
+                <i className="bi bi-person text-primary"></i>
+              </span>
+              <input
+                type="text"
+                className={`form-control form-control-lg border-start-0 bg-light ${errors.nom ? "is-invalid" : ""}`}
+                name="nom"
+                value={formData.nom}
+                onChange={handleChange}
+                placeholder="Ex: Ahmed Alami"
+              />
+            </div>
+            {errors.nom && <div className="text-danger small mt-1">{errors.nom}</div>}
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Filière</label>
-            <input
-              type="text"
-              className={`form-control ${errors.filiere ? "is-invalid" : ""}`}
-              name="filiere"
-              value={formData.filiere}
-              onChange={handleChange}
-              placeholder="Ex: DD101"
-            />
+          <div className="mb-4">
+            <label className="form-label fw-bold small text-muted text-uppercase">Filière / Classe</label>
+            <div className="input-group">
+              <span className="input-group-text bg-light border-end-0">
+                <i className="bi bi-mortarboard text-primary"></i>
+              </span>
+              <input
+                type="text"
+                className={`form-control form-control-lg border-start-0 bg-light ${errors.filiere ? "is-invalid" : ""}`}
+                name="filiere"
+                value={formData.filiere}
+                onChange={handleChange}
+                placeholder="Ex: DD105"
+              />
+            </div>
             {errors.filiere && (
-              <div className="invalid-feedback">{errors.filiere}</div>
+              <div className="text-danger small mt-1">{errors.filiere}</div>
             )}
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Sexe</label>
-            <div>
-              <div className="form-check form-check-inline">
+          <div className="mb-4">
+            <label className="form-label fw-bold small text-muted text-uppercase d-block mb-3">Genre</label>
+            <div className="d-flex gap-4">
+              <div className="form-check custom-radio">
                 <input
                   className="form-check-input"
                   type="radio"
@@ -106,11 +116,11 @@ function StagiaireForm({ stagiaire, onCancel, onSave }) {
                   checked={formData.sexe === "m"}
                   onChange={handleChange}
                 />
-                <label className="form-check-label" htmlFor="sexeM">
-                  <i className="bi bi-gender-male me-1"></i>Masculin
+                <label className="form-check-label fw-medium" htmlFor="sexeM">
+                  <i className="bi bi-gender-male me-1 text-primary"></i>Masculin
                 </label>
               </div>
-              <div className="form-check form-check-inline">
+              <div className="form-check custom-radio">
                 <input
                   className="form-check-input"
                   type="radio"
@@ -120,29 +130,32 @@ function StagiaireForm({ stagiaire, onCancel, onSave }) {
                   checked={formData.sexe === "f"}
                   onChange={handleChange}
                 />
-                <label className="form-check-label" htmlFor="sexeF">
-                  <i className="bi bi-gender-female me-1"></i>Féminin
+                <label className="form-check-label fw-medium" htmlFor="sexeF">
+                  <i className="bi bi-gender-female me-1 text-danger"></i>Féminin
                 </label>
               </div>
             </div>
           </div>
 
-          <div className="d-flex gap-2">
-            <button type="submit" className="btn btn-success">
-              <i className="bi bi-check-lg me-1"></i>
-              {stagiaire ? "Modifier" : "Ajouter"}
+          <div className="d-flex gap-3 pt-3">
+            <button type="submit" className="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm d-flex align-items-center flex-grow-1 justify-content-center">
+              <i className="bi bi-check-lg me-2 fs-5"></i>
+              {stagiaire ? "Mettre à jour" : "Enregistrer"}
             </button>
             <button
               type="button"
-              className="btn btn-secondary"
+              className="btn btn-outline-secondary rounded-pill px-4 py-2 fw-bold d-flex align-items-center"
               onClick={onCancel}
             >
-              <i className="bi bi-x-lg me-1"></i>
               Annuler
             </button>
           </div>
         </form>
       </div>
+      <style>{`
+        .tracking-wider { letter-spacing: 0.05em; }
+        .custom-radio .form-check-input:checked { background-color: #0d6efd; border-color: #0d6efd; }
+      `}</style>
     </div>
   );
 }

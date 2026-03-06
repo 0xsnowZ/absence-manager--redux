@@ -19,6 +19,7 @@ function AbsencesPage() {
     dateFilter: null,
     periodFilter: null,
     stagiaireFilter: null,
+    filiereFilter: null,
   });
 
   const handleEdit = (absence) => {
@@ -47,22 +48,25 @@ function AbsencesPage() {
 
   return (
     <div className="container py-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>
-          <i className="bi bi-calendar-x me-2"></i>
-          Gestion des Absences
-        </h2>
+      <div className="d-flex justify-content-between align-items-center mb-5">
+        <div>
+          <h2 className="fw-bold mb-1">
+            <i className="bi bi-calendar-x-fill me-3 text-primary"></i>
+            Gestion des Absences
+          </h2>
+          <p className="text-muted mb-0">Suivi et gestion des absences individuelles.</p>
+        </div>
         {!showForm && (
-          <button className="btn btn-primary" onClick={handleAddNew}>
-            <i className="bi bi-plus-lg me-1"></i>
-            Nouvelle Absence
+          <button className="btn btn-primary rounded-pill px-4 py-2 shadow fw-bold d-flex align-items-center" onClick={handleAddNew}>
+            <i className="bi bi-plus-circle-fill me-2 fs-5"></i>
+            Déclarer une Absence
           </button>
         )}
       </div>
 
       {showForm ? (
-        <div className="row">
-          <div className="col-md-6 mx-auto">
+        <div className="row justify-content-center">
+          <div className="col-lg-6">
             <AbsenceForm
               absence={editingAbsence}
               onCancel={handleCancel}
@@ -71,17 +75,18 @@ function AbsencesPage() {
           </div>
         </div>
       ) : (
-        <div className="row">
-          <div className="col-md-3 mb-4">
+        <div className="row g-4">
+          <div className="col-lg-3">
             <Filters onFilterChange={handleFilterChange} />
           </div>
-          <div className="col-md-9">
+          <div className="col-lg-9">
             <AbsenceList
               onEdit={handleEdit}
               filterType={filters.filterType}
               dateFilter={filters.dateFilter}
               periodFilter={filters.periodFilter}
               stagiaireFilter={filters.stagiaireFilter}
+              filiereFilter={filters.filiereFilter}
             />
           </div>
         </div>

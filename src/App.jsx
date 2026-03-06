@@ -3,6 +3,7 @@ import Navigation from "./components/Navigation.jsx";
 import StagiairesPage from "./pages/StagiairesPage.jsx";
 import AbsencesPage from "./pages/AbsencesPage.jsx";
 import StatisticsPage from "./pages/StatisticsPage.jsx";
+import SaisiePage from "./pages/SaisiePage.jsx";
 
 // Main App Component
 function App() {
@@ -14,6 +15,8 @@ function App() {
         return <StagiairesPage />;
       case "absences":
         return <AbsencesPage />;
+      case "saisie":
+        return <SaisiePage />;
       case "statistics":
         return <StatisticsPage />;
       default:
