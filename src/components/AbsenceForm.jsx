@@ -12,7 +12,7 @@ function AbsenceForm({ absence, onCancel, onSave }) {
     idstag: "",
     date: "",
     justifie: false,
-    heures: 2,
+    heures: 2.5,
   });
   const [errors, setErrors] = useState({});
 
@@ -22,7 +22,7 @@ function AbsenceForm({ absence, onCancel, onSave }) {
         idstag: absence.idstag.toString(),
         date: absence.date,
         justifie: absence.justifie,
-        heures: absence.heures || 2,
+        heures: absence.heures || 2.5,
       });
     } else if (stagiaires.length > 0) {
       setFormData((prev) => ({
@@ -53,7 +53,7 @@ function AbsenceForm({ absence, onCancel, onSave }) {
       const data = {
         ...formData,
         idstag: parseInt(formData.idstag),
-        heures: parseInt(formData.heures),
+        heures: parseFloat(formData.heures),
       };
 
       if (absence) {
@@ -88,9 +88,12 @@ function AbsenceForm({ absence, onCancel, onSave }) {
   }
 
   return (
-    <div className="card border-0 shadow-lg overflow-hidden position-relative" style={{ zIndex: 10 }}>
+    <div
+      className="card border-0 shadow-lg overflow-hidden position-relative"
+      style={{ zIndex: 10 }}
+    >
       {/* Decorative top border */}
-      <div className="bg-dark-navy" style={{ height: '4px' }}></div>
+      <div className="bg-dark-navy" style={{ height: "4px" }}></div>
       <div className="card-header bg-white py-4 border-bottom-0">
         <h5 className="mb-0 fw-bold text-dark d-flex align-items-center">
           <span className="bg-soft-dark-navy text-dark-navy p-2 rounded me-3 d-flex">
@@ -99,13 +102,16 @@ function AbsenceForm({ absence, onCancel, onSave }) {
           {absence ? "Modifier l'Absence" : "Saisir une Absence"}
         </h5>
         <p className="text-muted small mt-2 mb-0 ms-5 ps-1">
-          Remplissez les informations ci-dessous pour enregistrer ou mettre à jour une absence individuelle.
+          Remplissez les informations ci-dessous pour enregistrer ou mettre à
+          jour une absence individuelle.
         </p>
       </div>
       <div className="card-body p-4 bg-light border-top border-bottom">
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="form-label fw-bold small text-muted text-uppercase">Cible Stagiaire</label>
+            <label className="form-label fw-bold small text-muted text-uppercase">
+              Cible Stagiaire
+            </label>
             <div className="input-group input-group-lg shadow-sm">
               <span className="input-group-text bg-white text-dark-navy border-end-0">
                 <i className="bi bi-person-badge"></i>
@@ -116,7 +122,9 @@ function AbsenceForm({ absence, onCancel, onSave }) {
                 value={formData.idstag}
                 onChange={handleChange}
               >
-                <option value="">Sélectionner un stagiaire dans la liste...</option>
+                <option value="">
+                  Sélectionner un stagiaire dans la liste...
+                </option>
                 {stagiaires.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.nom} — {s.filiere}
@@ -125,13 +133,18 @@ function AbsenceForm({ absence, onCancel, onSave }) {
               </select>
             </div>
             {errors.idstag && (
-              <div className="text-danger small mt-2 fw-medium"><i className="bi bi-exclamation-circle me-1"></i>{errors.idstag}</div>
+              <div className="text-danger small mt-2 fw-medium">
+                <i className="bi bi-exclamation-circle me-1"></i>
+                {errors.idstag}
+              </div>
             )}
           </div>
 
           <div className="row g-4 mb-4">
             <div className="col-md-7">
-              <label className="form-label fw-bold small text-muted text-uppercase">Date Relevée</label>
+              <label className="form-label fw-bold small text-muted text-uppercase">
+                Date Relevée
+              </label>
               <div className="input-group input-group-lg shadow-sm">
                 <span className="input-group-text bg-white text-dark-navy border-end-0">
                   <i className="bi bi-calendar-event"></i>
@@ -150,15 +163,18 @@ function AbsenceForm({ absence, onCancel, onSave }) {
             </div>
 
             <div className="col-md-5">
-              <label className="form-label fw-bold small text-muted text-uppercase">Heures Manquées</label>
+              <label className="form-label fw-bold small text-muted text-uppercase">
+                Heures Manquées
+              </label>
               <div className="input-group input-group-lg shadow-sm">
                 <span className="input-group-text bg-white text-dark-navy border-end-0">
                   <i className="bi bi-clock-history"></i>
                 </span>
                 <input
                   type="number"
-                  min="1"
-                  max="8"
+                  min="0.5"
+                  max="10"
+                  step="0.5"
                   className={`form-control border-start-0 ${errors.heures ? "is-invalid" : ""}`}
                   name="heures"
                   value={formData.heures}
@@ -166,7 +182,10 @@ function AbsenceForm({ absence, onCancel, onSave }) {
                 />
               </div>
               {errors.heures && (
-                <div className="text-danger small mt-2 fw-medium"><i className="bi bi-exclamation-circle me-1"></i>{errors.heures}</div>
+                <div className="text-danger small mt-2 fw-medium">
+                  <i className="bi bi-exclamation-circle me-1"></i>
+                  {errors.heures}
+                </div>
               )}
             </div>
           </div>
@@ -178,20 +197,39 @@ function AbsenceForm({ absence, onCancel, onSave }) {
                 type="checkbox"
                 name="justifie"
                 id="justifie"
-                style={{ width: '3rem', height: '1.5rem', cursor: 'pointer' }}
+                style={{ width: "3rem", height: "1.5rem", cursor: "pointer" }}
                 checked={formData.justifie}
                 onChange={handleChange}
               />
-              <label className="form-check-label fw-bold text-dark d-flex flex-column justify-content-center" htmlFor="justifie" style={{ cursor: 'pointer' }}>
+              <label
+                className="form-check-label fw-bold text-dark d-flex flex-column justify-content-center"
+                htmlFor="justifie"
+                style={{ cursor: "pointer" }}
+              >
                 {formData.justifie ? (
                   <>
-                    <span className="text-success fs-6"><i className="bi bi-shield-check me-1"></i> Absence Justifiée</span>
-                    <span className="small text-muted fw-normal" style={{ fontSize: '0.75rem' }}>Motif valable fourni</span>
+                    <span className="text-success fs-6">
+                      <i className="bi bi-shield-check me-1"></i> Absence
+                      Justifiée
+                    </span>
+                    <span
+                      className="small text-muted fw-normal"
+                      style={{ fontSize: "0.75rem" }}
+                    >
+                      Motif valable fourni
+                    </span>
                   </>
                 ) : (
                   <>
-                    <span className="text-danger fs-6"><i className="bi bi-shield-x me-1"></i> Non Justifiée</span>
-                    <span className="small text-muted fw-normal" style={{ fontSize: '0.75rem' }}>En attente de justificatif</span>
+                    <span className="text-danger fs-6">
+                      <i className="bi bi-shield-x me-1"></i> Non Justifiée
+                    </span>
+                    <span
+                      className="small text-muted fw-normal"
+                      style={{ fontSize: "0.75rem" }}
+                    >
+                      En attente de justificatif
+                    </span>
                   </>
                 )}
               </label>
@@ -199,7 +237,10 @@ function AbsenceForm({ absence, onCancel, onSave }) {
           </div>
 
           <div className="d-flex gap-3 pt-3 border-top mt-2">
-            <button type="submit" className="btn btn-dark-navy rounded-pill px-5 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center flex-grow-1 fs-5">
+            <button
+              type="submit"
+              className="btn btn-dark-navy rounded-pill px-5 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center flex-grow-1 fs-5"
+            >
               <i className="bi bi-check2-all me-2"></i>
               {absence ? "Enregistrer les modifications" : "Valider l'Absence"}
             </button>

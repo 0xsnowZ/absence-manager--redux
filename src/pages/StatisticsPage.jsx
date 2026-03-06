@@ -1,13 +1,8 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
 import Statistics from "../components/Statistics.jsx";
 
 // Statistics Page
 
 function StatisticsPage() {
-  const absences = useSelector((state) => state.absences.items);
-  const stagiaires = useSelector((state) => state.stagiaires.items);
-
   return (
     <div className="container py-4 pb-5">
       <div className="d-flex justify-content-between align-items-center mb-5">
@@ -16,7 +11,9 @@ function StatisticsPage() {
             <i className="bi bi-graph-up-arrow me-3 text-dark-navy"></i>
             Statistiques
           </h2>
-          <p className="text-muted mb-0">Vue globale de l'activité commerciale et de l'assiduité.</p>
+          <p className="text-muted mb-0">
+            Vue globale de l'activité commerciale et de l'assiduité.
+          </p>
         </div>
       </div>
 
@@ -24,7 +21,6 @@ function StatisticsPage() {
       <div className="mb-5">
         <Statistics />
       </div>
-
 
       {/* Removed Global Summary Table */}
       <style>{`

@@ -1,13 +1,7 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import AbsenceForm from "../components/AbsenceForm.jsx";
 import AbsenceList from "../components/AbsenceList.jsx";
 import Filters from "../components/Filters.jsx";
-import {
-  addAbsence,
-  updateAbsence,
-  deleteAbsence,
-} from "../store/absenceSlice.jsx";
 
 // Absences Page
 
@@ -53,10 +47,15 @@ function AbsencesPage() {
             <i className="bi bi-calendar-x-fill me-3 text-dark-navy"></i>
             Gestion des Absences
           </h2>
-          <p className="text-muted mb-0">Suivi et gestion des absences individuelles.</p>
+          <p className="text-muted mb-0">
+            Suivi et gestion des absences individuelles.
+          </p>
         </div>
         {!showForm && (
-          <button className="btn btn-dark-navy rounded-pill px-4 py-2 shadow fw-bold d-flex align-items-center" onClick={handleAddNew}>
+          <button
+            className="btn btn-dark-navy rounded-pill px-4 py-2 shadow fw-bold d-flex align-items-center"
+            onClick={handleAddNew}
+          >
             <i className="bi bi-plus-circle-fill me-2 fs-5"></i>
             Déclarer une Absence
           </button>
